@@ -5,6 +5,13 @@
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
+## Related Repos
+
+| Repo | Role |
+|------|------|
+| **[dsa-bot](https://github.com/4reeb-5yed/dsa-bot)** | Orchestrator — picks problems, writes files, opens PRs, merges after CI |
+| **[dsa-question-bank](https://github.com/4reeb-5yed/dsa-question-bank)** | Content bank — 120 DSA problems with solutions & tests |
+
 This repo is the visible output of a scheduled, multi-repo GitHub Actions
 pipeline. The orchestrator (`dsa-bot`) clones a pre-validated content bank,
 writes new files here, runs tests locally, opens a pull request, waits for
