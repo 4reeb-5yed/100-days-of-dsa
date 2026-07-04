@@ -1043,8 +1043,8 @@ def main():
             # Insert row before PROGRESS_TABLE_END
             new_row = f"| {day_str} | {title} | {topic} | {difficulty} | {today} |\n"
             readme_content = readme_content.replace(
-                "<!-- PROGRESS_TABLE_END -->",
-                new_row + "<!-- PROGRESS_TABLE_END -->"
+                "&lt;!-- PROGRESS_TABLE_END --&gt;",
+                new_row + "&lt;!-- PROGRESS_TABLE_END --&gt;"
             )
             with open(readme_path, 'w') as f:
                 f.write(readme_content)
@@ -1881,7 +1881,12 @@ f'git -c user.name="YOUR_USERNAME" -c user.email="YOUR_NOREPLY_EMAIL@users.norep
         // Copy button functionality
         function copyCode(button) {
             const codeBlock = button.parentElement.querySelector('code');
-            const text = codeBlock.textContent;
+            let text = codeBlock.textContent;
+            
+            // Decode HTML entities (e.g., &lt; becomes <)
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            text = textarea.value;
             
             navigator.clipboard.writeText(text).then(() => {
                 button.textContent = 'Copied!';
