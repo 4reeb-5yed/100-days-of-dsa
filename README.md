@@ -7,6 +7,7 @@ Daily DSA practice — solutions are drawn from a private, pre-written question 
 | Day | Problem | Topic | Difficulty | Date |
 |-----|---------|-------|------------|------|
 <!-- PROGRESS_TABLE_START -->
+| 001 | Two Sum | array-hashing | easy | 2026-07-04 |
 <!-- PROGRESS_TABLE_END -->
 
 ## About This Project
