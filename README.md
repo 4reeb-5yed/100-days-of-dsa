@@ -1,6 +1,24 @@
-# 100 Days of DSA
+# 100 Days of DSA — an autonomous CI/CD pipeline demo
 
-Daily DSA practice — solutions are drawn from a private, pre-written question bank and delivered here automatically via GitHub Actions, one per day, verified by tests before merge.
+This repo is the visible output of a scheduled, multi-repo GitHub Actions
+pipeline. A private orchestrator repo clones a pre-validated content bank,
+writes new files here, runs tests locally, opens a pull request, waits for
+an independent CI check to genuinely pass, and only then merges —
+automatically, once a day, with no manual intervention after setup.
+
+The project was built to explore:
+- Secure credential scoping across multiple repositories (separate
+  least-privilege tokens for build-time vs. runtime use)
+- Fail-closed CI gating — broken code is structurally prevented from
+  reaching `main`, verified via two independent test runs
+- Branch-protection-respecting automated merges (no bypass flags)
+- Debugging real pipeline failures: an import-path/module-naming bug, a
+  merge-logic bug that silently ignored failing CI checks, and a
+  fork-PR secret-exposure consideration
+
+The daily content itself (DSA solutions) comes from a private, pre-written
+question bank — the interesting engineering here is the pipeline that
+delivers and verifies it, not live problem-solving.
 
 ## Progress
 
