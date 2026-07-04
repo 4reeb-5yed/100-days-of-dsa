@@ -13,15 +13,13 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**3 / 100 completed** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3%
+**Day 3 of 100**
 
-| Day | Problem | Topic | Difficulty |
-|-----|---------|-------|------------|
-<!-- PROGRESS_TABLE_START -->
-| 001 | Two Sum | array-hashing | `easy` |
-| 002 | Contains Duplicate | array-hashing | `easy` |
-| 003 | Valid Anagram | array-hashing | `easy` |
-<!-- PROGRESS_TABLE_END -->
+| # | Problem | Topic | Level |
+|---|---------|-------|-------|
+| 001 | Two Sum | array-hashing | 🟢 easy |
+| 002 | Contains Duplicate | array-hashing | 🟢 easy |
+| 003 | Valid Anagram | array-hashing | 🟢 easy |
 
 ## Repository Structure
 
