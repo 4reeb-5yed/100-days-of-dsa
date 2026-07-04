@@ -225,29 +225,31 @@
 
         .copy-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            top: 4px;
+            right: 4px;
+            background: var(--accent);
+            border: 2px solid var(--accent);
+            color: #ffffff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.15s ease;
             font-family: inherit;
             z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .copy-btn:hover {
-            background: var(--accent-bg);
+            background: #ffffff;
             color: var(--accent);
-            border-color: var(--accent);
+            border-color: #ffffff;
         }
 
         .copy-btn.copied {
-            background: var(--tip-bg);
-            color: var(--tip-border);
+            background: var(--tip-border);
+            color: #ffffff;
             border-color: var(--tip-border);
         }
 
