@@ -13,7 +13,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 3 of 100**
+**Day 3 of 100** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
