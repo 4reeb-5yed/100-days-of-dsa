@@ -1,5 +1,7 @@
 # 100 Days of DSA — an autonomous CI/CD pipeline demo
 
+📖 **Full step-by-step build guide**: https://4reeb-5yed.github.io/100-days-of-dsa/
+
 This repo is the visible output of a scheduled, multi-repo GitHub Actions
 pipeline. A private orchestrator repo clones a pre-validated content bank,
 writes new files here, runs tests locally, opens a pull request, waits for

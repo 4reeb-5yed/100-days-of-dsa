@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building an Autonomous CI/CD Pipeline Across Multiple GitHub Repos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-code: #1c2128;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --border-color: #30363d;
+            --accent: #58a6ff;
+            --accent-bg: #1f6feb1a;
+            --warning-bg: #d2992233;
+            --warning-border: #d29922;
+            --tip-bg: #23863633;
+            --tip-border: #238636;
+            --danger-bg: #f8514933;
+            --danger-border: #f85149;
+            --sidebar-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            padding: 24px 16px;
+            z-index: 100;
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            padding-left: 12px;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: var(--accent-bg);
+            color: var(--accent);
+        }
+
+        .sidebar nav .section-header {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 20px;
+            margin-bottom: 8px;
+            padding-left: 12px;
+            font-size: 13px;
+        }
+
+        .sidebar nav .section-header:first-child {
+            margin-top: 0;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 48px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--accent);
+        }
+
+        h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        ul, ol {
+            margin-bottom: 16px;
+            padding-left: 24px;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 40px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 48px;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            margin-bottom: 32px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 680px;
+            margin: 0 auto 24px;
+        }
+
+        .hero .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-family: inherit;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-bg);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .copy-btn.copied {
+            background: var(--tip-bg);
+            color: var(--tip-border);
+            border-color: var(--tip-border);
+        }
+
+        /* Inline Code */
+        p code, li code {
+            background: var(--bg-code);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin: 24px 0;
+            border-left: 4px solid;
+        }
+
+        .callout-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .callout.warning {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+        }
+
+        .callout.warning .callout-title {
+            color: var(--warning-border);
+        }
+
+        .callout.tip {
+            background: var(--tip-bg);
+            border-color: var(--tip-border);
+        }
+
+        .callout.tip .callout-title {
+            color: var(--tip-border);
+        }
+
+        .callout.danger {
+            background: var(--danger-bg);
+            border-color: var(--danger-border);
+        }
+
+        .callout.danger .callout-title {
+            color: var(--danger-border);
+        }
+
+        .callout p {
+            margin-bottom: 0;
+        }
+
+        /* Architecture Diagram */
+        .diagram-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 32px;
+            margin: 24px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Steps */
+        .step {
+            margin-bottom: 48px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: var(--accent);
+            color: var(--bg-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .step h3 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        /* File labels */
+        .file-label {
+            background: var(--bg-code);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+        }
+
+        /* FAQ */
+        .faq-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        /* Download Section */
+        .download-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .download-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .download-item .file-name {
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .download-item .description {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .download-item a {
+            font-size: 14px;
+        }
+
+        /* Closing */
+        .closing-note {
+            background: var(--bg-secondary);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 48px;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* Syntax highlighting adjustments */
+        .hljs {
+            background: transparent !important;
+            padding: 0 !important;
+        }
+
+        pre code {
+            display: block;
+            padding-right: 60px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-title">Building an Autonomous CI/CD Pipeline</div>
+        <nav>
+            <ul>
+                <li class="section-header">Getting Started</li>
+                <li><a href="#intro">Introduction</a></li>
+                <li><a href="#architecture">Architecture Overview</a></li>
+                <li><a href="#prerequisites">Prerequisites</a></li>
+                
+                <li class="section-header">Step-by-Step Build</li>
+                <li><a href="#step1">Step 1: Create Repos</a></li>
+                <li><a href="#step2">Step 2: Data Repo</a></li>
+                <li><a href="#step3">Step 3: Orchestrator Repo</a></li>
+                <li><a href="#step4">Step 4: Output Repo</a></li>
+                <li><a href="#step5">Step 5: Fine-grained PAT</a></li>
+                <li><a href="#step6">Step 6: Repo Settings</a></li>
+                <li><a href="#step7">Step 7: Commit Attribution</a></li>
+                <li><a href="#step8">Step 8: Test End-to-End</a></li>
+                
+                <li class="section-header">Reference</li>
+                <li><a href="#troubleshooting">Troubleshooting</a></li>
+                <li><a href="#why-this">Why This Architecture</a></li>
+                <li><a href="#downloads">Downloadable Files</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Section 1: Hero / Intro -->
+            <section id="intro">
+                <div class="hero">
+                    <h1>Building an Autonomous CI/CD Pipeline Across Multiple GitHub Repos</h1>
+                    <p>
+                        This guide teaches you how to build a fully automated delivery system using 
+                        GitHub Actions. You'll create a scheduled pipeline that clones content from 
+                        one private repository, tests it in another, and delivers it to a third via 
+                        a real pull request — with CI-gated merges and zero manual intervention 
+                        after initial setup.
+                    </p>
+                    <p class="subtitle">
+                        This is a CI/CD and GitHub Actions learning project focused on automation 
+                        architecture, secure credential handling, and fail-closed pipeline design.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 2: Architecture Overview -->
+            <section id="architecture">
+                <h2>Architecture Overview</h2>
+                
+                <p>
+                    The pipeline spans three separate GitHub repositories, each with a distinct role:
+                </p>
+
+                <div class="diagram-container">
+                    <svg width="700" height="320" viewBox="0 0 700 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Private Data Repo -->
+                        <rect x="20" y="40" width="180" height="120" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+                        <rect x="20" y="40" width="180" height="32" rx="8" fill="#238636" fill-opacity="0.2"/>
+                        <rect x="20" y="64" width="180" height="8" fill="#238636" fill-opacity="0.2"/>
+                        <text x="110" y="62" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">🔒 Private Data Repo</text>
+                        <text x="110" y="95" text-anchor="middle" fill="#8b949e" font-size="11">problem-bank.json</text>
+                        <text x="110" y="115" text-anchor="middle" fill="#8b949e" font-size="11">DSA problems</text>
+                        <text x="110" y="135" text-anchor="middle" fill="#8b949e" font-size="11">& solutions</text>
+                        
+                        <!-- Private Orchestrator Repo -->
+                        <rect x="250" y="40" width="200" height="120" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+                        <rect x="250" y="40" width="200" height="32" rx="8" fill="#d29922" fill-opacity="0.2"/>
+                        <rect x="250" y="64" width="200" height="8" fill="#d29922" fill-opacity="0.2"/>
+                        <text x="350" y="62" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">🔒 Private Orchestrator</text>
+                        <text x="350" y="95" text-anchor="middle" fill="#8b949e" font-size="11">pick_and_commit.py</text>
+                        <text x="350" y="115" text-anchor="middle" fill="#8b949e" font-size="11">progress/state.json</text>
+                        <text x="350" y="135" text-anchor="middle" fill="#8b949e" font-size="11">daily-dsa.yml</text>
+
+                        <!-- Public Output Repo -->
+                        <rect x="500" y="40" width="180" height="120" rx="8" fill="#161b22" stroke="#30363d" stroke-width="2"/>
+                        <rect x="500" y="40" width="180" height="32" rx="8" fill="#58a6ff" fill-opacity="0.2"/>
+                        <rect x="500" y="64" width="180" height="8" fill="#58a6ff" fill-opacity="0.2"/>
+                        <text x="590" y="62" text-anchor="middle" fill="#e6edf3" font-size="13" font-weight="600">🌐 Public Output</text>
+                        <text x="590" y="95" text-anchor="middle" fill="#8b949e" font-size="11">solutions/*.py</text>
+                        <text x="590" y="115" text-anchor="middle" fill="#8b949e" font-size="11">tests/*.py</text>
+                        <text x="590" y="135" text-anchor="middle" fill="#8b949e" font-size="11">README.md</text>
+
+                        <!-- Arrows with Labels -->
+                        <!-- Arrow: Data -> Orchestrator (clone) -->
+                        <path d="M200 100 L240 100" stroke="#30363d" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="220" y="92" text-anchor="middle" fill="#6e7681" font-size="10">clone</text>
+                        
+                        <!-- Arrow: Orchestrator -> Output (write + PR) -->
+                        <path d="M450 80 L490 80" stroke="#30363d" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="470" y="72" text-anchor="middle" fill="#6e7681" font-size="10">write + PR</text>
+                        
+                        <!-- Arrow: Output -> Orchestrator (CI status) -->
+                        <path d="M490 120 L450 120" stroke="#30363d" stroke-width="2" marker-end="url(#arrowhead)"/>
+                        <text x="470" y="132" text-anchor="middle" fill="#6e7681" font-size="10">CI status</text>
+
+                        <!-- GitHub Actions Runner -->
+                        <rect x="260" y="200" width="180" height="80" rx="8" fill="#1c2128" stroke="#58a6ff" stroke-width="2" stroke-dasharray="4 2"/>
+                        <text x="350" y="228" text-anchor="middle" fill="#58a6ff" font-size="12" font-weight="600">GitHub Actions Runner</text>
+                        <text x="350" y="250" text-anchor="middle" fill="#8b949e" font-size="11">Runs daily-dsa.yml</text>
+                        <text x="350" y="268" text-anchor="middle" fill="#8b949e" font-size="11">Has PAT secret</text>
+
+                        <!-- PAT Box -->
+                        <rect x="40" y="220" width="140" height="60" rx="6" fill="#d29922" fill-opacity="0.15" stroke="#d29922" stroke-width="1"/>
+                        <text x="110" y="245" text-anchor="middle" fill="#d29922" font-size="11" font-weight="600">Fine-grained PAT</text>
+                        <text x="110" y="262" text-anchor="middle" fill="#8b949e" font-size="10">Read: data repo</text>
+                        <text x="110" y="275" text-anchor="middle" fill="#8b949e" font-size="10">Write: orchestrator + output</text>
+
+                        <!-- Arrow: PAT to Data -->
+                        <path d="M180 250 L200 160" stroke="#d29922" stroke-width="1" stroke-dasharray="3 2"/>
+                        
+                        <!-- Arrow: PAT to Output -->
+                        <path d="M220 250 L470 160" stroke="#d29922" stroke-width="1" stroke-dasharray="3 2"/>
+
+                        <!-- Arrow: Runner to PAT -->
+                        <path d="M260 240 L180 250" stroke="#d29922" stroke-width="1" stroke-dasharray="3 2"/>
+
+                        <!-- Legend -->
+                        <rect x="40" y="290" width="12" height="12" fill="#238636" fill-opacity="0.3" rx="2"/>
+                        <text x="58" y="300" fill="#8b949e" font-size="10">Private</text>
+                        <rect x="100" y="290" width="12" height="12" fill="#58a6ff" fill-opacity="0.3" rx="2"/>
+                        <text x="118" y="300" fill="#8b949e" font-size="10">Public</text>
+                        <rect x="160" y="290" width="12" height="12" fill="#d29922" fill-opacity="0.3" rx="2"/>
+                        <text x="178" y="300" fill="#8b949e" font-size="10">Credential</text>
+
+                        <!-- Arrow marker definition -->
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#30363d"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <h3>Why Three Repositories?</h3>
+                
+                <p>
+                    This separation isn't arbitrary — each repo has a specific security and organizational role:
+                </p>
+
+                <ul>
+                    <li><strong>Private data repo</strong> — Contains your content bank. It only needs to be readable by the orchestrator. Nobody needs to write to it after creation.</li>
+                    <li><strong>Private orchestrator repo</strong> — Holds your automation logic and state. It needs write access to both itself (to update progress/state.json) and to the output repo (to create branches and PRs).</li>
+                    <li><strong>Public output repo</strong> — Your visible project. It has no secrets. CI runs independently on it, and only accepts changes via PR after tests pass.</li>
+                </ul>
+
+                <p>
+                    This follows the principle of least privilege: if the orchestrator is compromised, it can only write to the output repo — not to the data repo or any other project.
+                </p>
+            </section>
+
+            <!-- Section 3: Prerequisites -->
+            <section id="prerequisites">
+                <h2>Prerequisites</h2>
+                
+                <h3>What You Need Before Starting</h3>
+                
+                <ul>
+                    <li><strong>A GitHub account</strong> — Free accounts work fine for this project.</li>
+                    <li><strong>Basic GitHub familiarity</strong> — You should know how to create a repository, navigate settings, and view files. If you've never pushed code to GitHub before, consider doing a basic tutorial first.</li>
+                    <li><strong>No git CLI required</strong> — This guide explains everything using GitHub's web interface where possible, plus the <code>gh</code> CLI (which GitHub Actions runners have pre-installed, so we'll use it in automation scripts).</li>
+                </ul>
+
+                <h3>What is a Fine-grained PAT?</h3>
+                
+                <p>
+                    A Personal Access Token (PAT) is like a password that lets scripts act as you on GitHub. 
+                    A <em>fine-grained</em> PAT is a newer, more secure type that lets you grant access 
+                    to specific repositories with specific permissions — rather than your entire account.
+                </p>
+
+                <div class="callout warning">
+                    <div class="callout-title">⚠️ Why This Project Needs a Fine-grained PAT</div>
+                    <p>
+                        GitHub Actions runners get a special <code>GITHUB_TOKEN</code> automatically, 
+                        but that token can only access the repo where the workflow runs. Since our 
+                        automation needs to write to <em>two</em> repos (the output repo and its own 
+                        state), we need our own token with cross-repo permissions. A fine-grained PAT 
+                        gives us exactly that control.
+                    </p>
+                </div>
+
+                <h3>The <code>gh</code> CLI</h3>
+                
+                <p>
+                    The <code>gh</code> command-line tool is GitHub's official CLI. GitHub Actions runners 
+                    come with it pre-installed, so we can use it in our automation scripts to:
+                </p>
+                
+                <ul>
+                    <li>Create branches</li>
+                    <li>Open pull requests</li>
+                    <li>Check CI status</li>
+                    <li>Merge pull requests</li>
+                </ul>
+
+                <p>
+                    You don't need to install <code>gh</code> locally unless you want to test the scripts 
+                    on your own machine.
+                </p>
+            </section>
+
+            <!-- Section 4: Step-by-Step Build -->
+            <section id="step1">
+                <h2>Step-by-Step Build</h2>
+
+                <!-- Step 1: Create Three Empty Repos -->
+                <div class="step" id="step1">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3>Create Three Empty GitHub Repositories</h3>
+                    </div>
+
+                    <p>
+                        We need three repositories. Each should be initialized with a README so a 
+                        <code>main</code> branch exists immediately.
+                    </p>
+
+                    <div class="callout warning">
+                        <div class="callout-title">⚠️ Why Initialize with a README?</div>
+                        <p>
+                            An empty GitHub repository has <em>no branches at all</em> — not even <code>main</code>. 
+                            You can't create branches or open PRs against a repo with no default branch. 
+                            Initializing with a README creates the <code>main</code> branch automatically, 
+                            letting you immediately start working.
+                        </p>
+                    </div>
+
+                    <p>Create these three repositories in your GitHub account:</p>
+
+                    <ol>
+                        <li><strong>dsa-data</strong> (private) — Your question bank</li>
+                        <li><strong>dsa-orchestrator</strong> (private) — Your automation logic</li>
+                        <li><strong>dsa-output</strong> (public) — Your visible project</li>
+                    </ol>
+
+                    <p>
+                        For each one: click <strong>New repository</strong>, enter the name, choose 
+                        <strong>Private</strong> or <strong>Public</strong> as appropriate, check 
+                        <strong>Add a README file</strong>, and click <strong>Create repository</strong>.
+                    </p>
+
+                    <div class="callout tip">
+                        <div class="callout-title">💡 Tip</div>
+                        <p>
+                            Keep the repo names simple and all-lowercase with hyphens. Python module 
+                            names use underscores, but repo names can use hyphens. We'll handle the 
+                            distinction in the scripts.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2: Build the Data Repo -->
+                <div class="step" id="step2">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3>Build the Private Data Repository</h3>
+                    </div>
+
+                    <p>
+                        This repo stores your problem bank as a JSON file. Each entry describes one 
+                        DSA problem with its solution and tests.
+                    </p>
+
+                    <p>Create a file called <code>problem-bank.json</code> in the <strong>dsa-data</strong> repo:</p>
+
+                    <div class="file-label">dsa-data / problem-bank.json</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-json">[
+  {
+    "day": 1,
+    "title": "Two Sum",
+    "topic": "array-hashing",
+    "difficulty": "easy",
+    "problem": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
+    "solution_file": "day_001_two_sum.py",
+    "solution_code": "def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+    "test_file": "test_day_001_two_sum.py",
+    "test_code": "from solutions.day_001_two_sum import two_sum\n\ndef test_two_sum_basic():\n    assert two_sum([2, 7, 11, 15], 9) == [0, 1]\n\ndef test_two_sum_negative():\n    assert two_sum([-1, -2, -3, -4, -5], -8) == [2, 4]"
+  },
+  {
+    "day": 2,
+    "title": "Contains Duplicate",
+    "topic": "array-hashing",
+    "difficulty": "easy",
+    "problem": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
+    "solution_file": "day_002_contains_duplicate.py",
+    "solution_code": "def contains_duplicate(nums):\n    return len(nums) != len(set(nums))",
+    "test_file": "test_day_002_contains_duplicate.py",
+    "test_code": "from solutions.day_002_contains_duplicate import contains_duplicate\n\ndef test_has_duplicate():\n    assert contains_duplicate([1, 2, 3, 1]) == True\n\ndef test_no_duplicate():\n    assert contains_duplicate([1, 2, 3, 4]) == False"
+  }
+]</code></pre>
+                    </div>
+
+                    <h4>How to Write Good Problem Bank Entries</h4>
+
+                    <ul>
+                        <li><strong>Paraphrase problems</strong> — Don't copy problem text verbatim from LeetCode or other sites. Rewrite the problem description in your own words.</li>
+                        <li><strong>Spread difficulty</strong> — Include a mix of easy, medium, and hard problems.</li>
+                        <li><strong>Cover multiple topics</strong> — Arrays, strings, linked lists, trees, dynamic programming, etc.</li>
+                        <li><strong>One solution per entry</strong> — Keep it simple. Multiple solutions can come later.</li>
+                    </ul>
+
+                    <div class="callout tip">
+                        <div class="callout-title">💡 Tip</div>
+                        <p>
+                            The <code>day</code> number in each entry is the order in the bank, not today's date. 
+                            The orchestrator tracks which problems have been used in its own state file.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3: Build the Orchestrator Repo -->
+                <div class="step" id="step3">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3>Build the Private Orchestrator Repository</h3>
+                    </div>
+
+                    <p>
+                        This is the heart of the pipeline. It contains:
+                    </p>
+                    <ul>
+                        <li>A Python script that does the actual work</li>
+                        <li>A state file to track progress</li>
+                        <li>A GitHub Actions workflow to run it on a schedule</li>
+                    </ul>
+
+                    <h4>File 1: progress/state.json</h4>
+                    <p>Create this file to track which problems have been delivered:</p>
+
+                    <div class="file-label">dsa-orchestrator / progress / state.json</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-json">{
+  "last_run": "2026-07-04",
+  "last_day": 0,
+  "total_delivered": 0
+}</code></pre>
+                    </div>
+
+                    <h4>File 2: pick_and_commit.py</h4>
+                    <p>This script runs inside the GitHub Actions runner:</p>
+
+                    <div class="file-label">dsa-orchestrator / pick_and_commit.py</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">#!/usr/bin/env python3
+"""
+Orchestrator script: picks a problem from the data repo,
+writes files to the output repo, opens a PR, waits for CI,
+and merges only if CI passes.
+"""
+
+import json
+import os
+import subprocess
+import time
+import sys
+
+# Configuration
+DATA_REPO = "YOUR_USERNAME/dsa-data"
+OUTPUT_REPO = "YOUR_USERNAME/dsa-output"
+ORCHESTRATOR_REPO = "YOUR_USERNAME/dsa-orchestrator"
+GITHUB_TOKEN = os.environ["GH_PAT"]
+TODAY = "2026-07-04"  # In real use, calculate from datetime
+
+# Paths
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATE_FILE = os.path.join(SCRIPT_DIR, "progress", "state.json")
+DATA_BRANCH = "main"
+
+
+def run(cmd, check=True, capture_output=True):
+    """Run a shell command."""
+    print(f"Running: {cmd}")
+    result = subprocess.run(
+        cmd, shell=True, check=check, capture_output=capture_output, text=True
+    )
+    if result.stdout:
+        print(result.stdout.strip())
+    return result
+
+
+def load_state():
+    """Load current progress state."""
+    with open(STATE_FILE) as f:
+        return json.load(f)
+
+
+def save_state(state):
+    """Save progress state."""
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f, indent=2)
+
+
+def git_config():
+    """Configure git with attribution."""
+    run("git config --global user.email 'YOUR_NOREPLY_EMAIL@users.noreply.github.com'")
+    run("git config --global user.name 'Your Name'")
+
+
+def clone_repos():
+    """Clone both repos using the fine-grained PAT."""
+    base_url = f"https://{GITHUB_TOKEN}@github.com/"
+    
+    # Clone data repo
+    run(f"git clone {base_url}{DATA_REPO} data-repo-temp")
+    
+    # Clone output repo
+    run(f"git clone {base_url}{OUTPUT_REPO} output-repo-temp")
+
+
+def pick_problem(state):
+    """Pick the next problem from the bank."""
+    # Load the bank
+    with open("data-repo-temp/problem-bank.json") as f:
+        bank = json.load(f)
+    
+    # Find next unpicked problem
+    next_day = state["last_day"] + 1
+    
+    for entry in bank:
+        if entry["day"] == next_day:
+            return entry
+    
+    return None  # Bank exhausted
+
+
+def write_files(problem):
+    """Write solution and test files to the output repo."""
+    os.chdir("output-repo-temp")
+    
+    # Create directories
+    os.makedirs("solutions", exist_ok=True)
+    os.makedirs("tests", exist_ok=True)
+    
+    # Write solution file
+    solution_path = f"solutions/{problem['solution_file']}"
+    with open(solution_path, "w") as f:
+        f.write(problem["solution_code"])
+    print(f"Written: {solution_path}")
+    
+    # Write test file
+    test_path = f"tests/{problem['test_file']}"
+    with open(test_path, "w") as f:
+        f.write(problem["test_code"])
+    print(f"Written: {test_path}")
+    
+    # Update README with progress
+    update_readme(problem)
+    
+    os.chdir("..")
+
+
+def update_readme(problem):
+    """Update the README.md progress table."""
+    readme_path = "README.md"
+    
+    # Simple update: append to progress table
+    new_row = f"| {problem['day']:03d} | {problem['title']} | {problem['topic']} | {problem['difficulty']} | {TODAY} |"
+    
+    if os.path.exists(readme_path):
+        with open(readme_path) as f:
+            content = f.read()
+        
+        # Insert before PROGRESS_TABLE_END
+        content = content.replace(
+            "<!-- PROGRESS_TABLE_END -->",
+            f"{new_row}\n<!-- PROGRESS_TABLE_END -->"
+        )
+        
+        with open(readme_path, "w") as f:
+            f.write(content)
+
+
+def run_local_tests():
+    """Run pytest locally before pushing anything."""
+    print("Running local tests...")
+    result = run("pip install pytest -q && pytest -q", check=False)
+    
+    if result.returncode != 0:
+        print("TESTS FAILED locally — aborting pipeline!")
+        sys.exit(1)
+    
+    print("Local tests passed!")
+
+
+def create_pr_and_merge(state, problem):
+    """Create branch, commit, push, open PR, wait for CI, merge."""
+    os.chdir("output-repo-temp")
+    git_config()
+    
+    # Create a new branch for today
+    branch_name = f"daily/day-{problem['day']:03d}"
+    run(f"git checkout -b {branch_name}")
+    run("git add solutions/ tests/ README.md")
+    run(f"git commit -m 'Day {problem['day']}: {problem['title']}'")
+    run(f"git push -u origin {branch_name}")
+    
+    # Open PR using gh CLI
+    pr_url = run(
+        f'gh pr create --title "Day {problem["day"]}: {problem["title"]}" '
+        f'--body "Automated daily delivery" --repo {OUTPUT_REPO}',
+        capture_output=True
+    ).stdout.strip()
+    
+    print(f"PR opened: {pr_url}")
+    
+    # Poll for CI status
+    print("Waiting for CI to pass...")
+    max_wait = 600  # 10 minutes
+    interval = 15
+    elapsed = 0
+    
+    while elapsed < max_wait:
+        time.sleep(interval)
+        elapsed += interval
+        
+        # Check CI status
+        result = run(
+            f'gh pr status --repo {OUTPUT_REPO} --json statusCheckRollup',
+            check=False, capture_output=True
+        )
+        
+        # Parse the JSON output to check status
+        # For simplicity, we'll use a helper script or gh api
+        check_result = subprocess.run(
+            f'gh api repos/YOUR_USERNAME/dsa-output/commits/main/status',
+            shell=True, capture_output=True, text=True
+        )
+        
+        if check_result.returncode == 0:
+            status_data = json.loads(check_result.stdout)
+            state_val = status_data.get("state", "")
+            
+            if state_val == "success":
+                print("CI passed!")
+                break
+            elif state_val == "failure":
+                print("CI failed — aborting merge!")
+                sys.exit(1)
+    
+    # Merge the PR
+    print("Merging PR...")
+    run(f'gh pr merge --squash --repo {OUTPUT_REPO}')
+    
+    # Update state
+    state["last_run"] = TODAY
+    state["last_day"] = problem["day"]
+    state["total_delivered"] += 1
+    
+    os.chdir("..")
+
+
+def update_orchestrator_state(state):
+    """Update the orchestrator's own state file."""
+    os.chdir("orchestrator-repo-temp")
+    git_config()
+    
+    run("git checkout main")
+    
+    # Update state file
+    with open(STATE_FILE) as f:
+        current = json.load(f)
+    current.update(state)
+    
+    with open(STATE_FILE, "w") as f:
+        json.dump(current, f, indent=2)
+    
+    run("git add progress/state.json")
+    run(f'git commit -m "Update state: day {state["last_day"]}"')
+    run("git push")
+    
+    os.chdir("..")
+
+
+def main():
+    print("=" * 50)
+    print("Starting daily DSA delivery pipeline")
+    print("=" * 50)
+    
+    # Load state
+    state = load_state()
+    
+    # Guard: already ran today?
+    if state["last_run"] == TODAY:
+        print(f"Already ran today ({TODAY}). Skipping.")
+        return
+    
+    # Clone repos
+    print("Cloning repositories...")
+    clone_repos()
+    
+    # Pick next problem
+    problem = pick_problem(state)
+    
+    if problem is None:
+        print("No more problems in bank! Pipeline complete.")
+        return
+    
+    # Write files to output repo
+    print(f"Picking problem: Day {problem['day']} - {problem['title']}")
+    write_files(problem)
+    
+    # Run local tests
+    run_local_tests()
+    
+    # Create PR and wait for CI
+    create_pr_and_merge(state, problem)
+    
+    # Update orchestrator state
+    update_orchestrator_state(state)
+    
+    print("Pipeline complete!")
+
+
+if __name__ == "__main__":
+    main()</code></pre>
+                    </div>
+
+                    <h4>File 3: daily-dsa.yml</h4>
+                    <p>The GitHub Actions workflow that runs the script:</p>
+
+                    <div class="file-label">dsa-orchestrator / .github / workflows / daily-dsa.yml</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-yaml">name: Daily DSA Delivery
+
+on:
+  # Run every day at 9 AM UTC
+  schedule:
+    - cron: '0 9 * * *'
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout orchestrator repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          path: orchestrator-repo-temp
+      
+      - name: Run orchestrator script
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          python3 pick_and_commit.py</code></pre>
+                    </div>
+                </div>
+
+                <!-- Step 4: Build the Output Repo -->
+                <div class="step" id="step4">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3>Build the Public Output Repository</h3>
+                    </div>
+
+                    <p>
+                        This is the visible project. It has no secrets and runs CI independently 
+                        on every pull request.
+                    </p>
+
+                    <h4>File 1: .github/workflows/ci.yml</h4>
+
+                    <div class="file-label">dsa-output / .github / workflows / ci.yml</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-yaml">name: CI
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: pytest -q</code></pre>
+                    </div>
+
+                    <div class="callout danger">
+                        <div class="callout-title">🐛 Why <code>pull_request</code> and NOT <code>pull_request_target</code>?</div>
+                        <p>
+                            <code>pull_request_target</code> gives your workflow access to secrets when 
+                            processing PRs from forks. This is a security risk: a malicious PR could 
+                            steal those secrets. We use <code>pull_request</code> instead, which doesn't 
+                            expose secrets to fork PRs. Since our output repo is the main project 
+                            (not a fork scenario), this is safe and correct.
+                        </p>
+                    </div>
+
+                    <h4>File 2: pytest.ini</h4>
+
+                    <div class="file-label">dsa-output / pytest.ini</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-ini">[pytest]
+pythonpath = .</code></pre>
+                    </div>
+
+                    <div class="callout warning">
+                        <div class="callout-title">⚠️ Why <code>pythonpath = .</code> Is Required</div>
+                        <p>
+                            When you run <code>pytest tests/</code>, pytest changes into the 
+                            <code>tests/</code> directory. It then looks for imports like 
+                            <code>from solutions.day_001_two_sum import two_sum</code> relative 
+                            to <code>tests/</code> — but <code>solutions/</code> is at the project root, 
+                            not inside <code>tests/</code>.
+                        </p>
+                        <p>
+                            Setting <code>pythonpath = .</code> adds the project root to Python's 
+                            search path (<code>sys.path</code>), so the import can find 
+                            <code>solutions/</code> regardless of which directory pytest runs from.
+                        </p>
+                    </div>
+
+                    <h4>File 3: requirements.txt</h4>
+
+                    <div class="file-label">dsa-output / requirements.txt</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-txt">pytest</code></pre>
+                    </div>
+
+                    <h4>File 4: README.md (with progress table)</h4>
+
+                    <div class="file-label">dsa-output / README.md</div>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-markdown"># 100 Days of DSA
+
+Daily DSA practice — automated delivery pipeline demo.
+
+## Progress
+
+| Day | Problem | Topic | Difficulty | Date |
+|-----|---------|-------|------------|------|
+<!-- PROGRESS_TABLE_START -->
+<!-- PROGRESS_TABLE_END -->
+
+## Running Tests
+
+```bash
+pip install -r requirements.txt
+pytest
+```</code></pre>
+                    </div>
+                </div>
+
+                <!-- Step 5: Generate Fine-grained PAT -->
+                <div class="step" id="step5">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h3>Generate the Fine-grained PAT</h3>
+                    </div>
+
+                    <p>
+                        This token is what lets the orchestrator write to both repos. Follow 
+                        these exact steps:
+                    </p>
+
+                    <ol>
+                        <li>
+                            Go to <strong>GitHub Settings</strong> (click your profile picture → Settings)
+                        </li>
+                        <li>
+                            In the left sidebar, scroll to the bottom and click 
+                            <strong>Developer settings</strong>
+                        </li>
+                        <li>
+                            Click <strong>Personal access tokens</strong> → <strong>Fine-grained tokens</strong>
+                        </li>
+                        <li>
+                            Click <strong>Generate new token</strong>
+                        </li>
+                    </ol>
+
+                    <p><strong>Token settings:</strong></p>
+                    
+                    <ul>
+                        <li><strong>Token name:</strong> <code>dsa-orchestrator</code></li>
+                        <li><strong>Expiration:</strong> 30 days (or 90 days — your choice)</li>
+                        <li><strong>Description:</strong> Access for daily DSA orchestrator</li>
+                    </ul>
+
+                    <p><strong>Repository access:</strong></p>
+                    <ul>
+                        <li>Select <strong>Only select repositories</strong></li>
+                        <li>Choose: <code>dsa-data</code>, <code>dsa-orchestrator</code>, <code>dsa-output</code></li>
+                    </ul>
+
+                    <p><strong>Permissions for each repo:</strong></p>
+
+                    <ul>
+                        <li>
+                            <strong>dsa-data</strong> (contents): <em>Read-only</em> — the script only clones and reads this repo
+                        </li>
+                        <li>
+                            <strong>dsa-orchestrator</strong> (contents): <em>Read and write</em> — needs to push state updates
+                        </li>
+                        <li>
+                            <strong>dsa-output</strong> (contents): <em>Read and write</em> — needs to create branches, commits, and PRs
+                        </li>
+                        <li>
+                            <strong>dsa-output</strong> (pull requests): <em>Read and write</em> — needs to create and merge PRs
+                        </li>
+                    </ul>
+
+                    <div class="callout warning">
+                        <div class="callout-title">⚠️ Important</div>
+                        <p>
+                            Do NOT grant admin permissions. The orchestrator doesn't need to 
+                            bypass branch protections — that's intentional. CI-gated merges are 
+                            the point.
+                        </p>
+                    </div>
+
+                    <p>
+                        After clicking <strong>Generate token</strong>, copy the token immediately — 
+                        GitHub only shows it once!
+                    </p>
+
+                    <h4>Add the Token as a Secret</h4>
+
+                    <p>In the <strong>dsa-orchestrator</strong> repo:</p>
+
+                    <ol>
+                        <li>Go to <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong></li>
+                        <li>Click <strong>New repository secret</strong></li>
+                        <li>
+                            Name: <code>GH_PAT</code>
+                        </li>
+                        <li>
+                            Value: paste your token
+                        </li>
+                        <li>Click <strong>Add secret</strong></li>
+                    </ol>
+                </div>
+
+                <!-- Step 6: Configure Repo Settings -->
+                <div class="step" id="step6">
+                    <div class="step-header">
+                        <div class="step-number">6</div>
+                        <h3>Configure Repository Settings</h3>
+                    </div>
+
+                    <h4>Orchestrator Repo: Workflow Permissions</h4>
+
+                    <p>
+                        The orchestrator repo needs permission to push commits and create PRs 
+                        via the workflow:
+                    </p>
+
+                    <ol>
+                        <li>
+                            Go to <strong>Settings</strong> → <strong>Actions</strong> → <strong>General</strong>
+                        </li>
+                        <li>
+                            Under <strong>Workflow permissions</strong>, select 
+                            <strong>Read and write permissions</strong>
+                        </li>
+                        <li>Click <strong>Save</strong></li>
+                    </ol>
+
+                    <h4>Output Repo: Branch Protection</h4>
+
+                    <p>
+                        This is critical for the fail-closed design. Go to <strong>dsa-output</strong> → 
+                        <strong>Settings</strong> → <strong>Branches</strong> → <strong>Add branch protection rule</strong>:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <strong>Branch name pattern:</strong> <code>main</code>
+                        </li>
+                        <li>
+                            ✅ <strong>Require a pull request before merging</strong>
+                            <br>
+                            <em>Ensures changes go through PR review, not direct push</em>
+                        </li>
+                        <li>
+                            ✅ <strong>Require status checks to pass before merging</strong>
+                            <br>
+                            <em>Only enable this AFTER your CI workflow runs successfully at least once</em>
+                        </li>
+                        <li>
+                            🔲 <strong>Require approvals</strong> — leave unchecked
+                            <br>
+                            <em>We want automated merges without human approval</em>
+                        </li>
+                        <li>
+                            🔲 <strong>Do not allow bypassing the above settings</strong> — leave as default
+                            <br>
+                            <em>This is the important one: administrators cannot bypass either</em>
+                        </li>
+                    </ul>
+
+                    <div class="callout danger">
+                        <div class="callout-title">🐛 Common Mistake</div>
+                        <p>
+                            If you check "Allow administrators to bypass" or if your account is an admin 
+                            and you've enabled bypass, the automated merge will succeed even when CI fails. 
+                            The orchestrator's <code>gh pr merge</code> command has an <code>--admin</code> 
+                            flag that does exactly this — and that's why we don't use it.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 7: Fix Commit Attribution -->
+                <div class="step" id="step7">
+                    <div class="step-header">
+                        <div class="step-number">7</div>
+                        <h3>Fix Commit Attribution</h3>
+                    </div>
+
+                    <p>
+                        GitHub counts contributions (like commits on your profile) only when 
+                        the commit's author email matches an email verified on your GitHub account.
+                    </p>
+
+                    <div class="callout tip">
+                        <div class="callout-title">💡 Why This Matters</div>
+                        <p>
+                            When the script runs as "GitHub Actions," the default commit attribution 
+                            goes to <code>github-action[bot]</code> — not your personal account. 
+                            Setting <code>user.email</code> to your GitHub noreply address ensures 
+                            commits count toward your contribution graph.
+                        </p>
+                    </div>
+
+                    <h4>Get Your GitHub Noreply Address</h4>
+
+                    <ol>
+                        <li>
+                            Go to <strong>Settings</strong> → <strong>Emails</strong>
+                        </li>
+                        <li>
+                            Check that <strong>Keep my email addresses private</strong> is enabled
+                        </li>
+                        <li>
+                            Look for the generated noreply address — it looks like:
+                            <br>
+                            <code>12345678+YOURUSERNAME@users.noreply.github.com</code>
+                        </li>
+                        <li>Copy this address</li>
+                    </ol>
+
+                    <h4>Set the Email in the Script</h4>
+
+                    <p>In <code>pick_and_commit.py</code>, update the <code>git_config()</code> function:</p>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">def git_config():
+    """Configure git with attribution."""
+    run("git config --global user.email '12345678+YOURUSERNAME@users.noreply.github.com'")
+    run("git config --global user.name 'Your Name'")</code></pre>
+                    </div>
+
+                    <p>
+                        Replace <code>12345678+YOURUSERNAME@users.noreply.github.com</code> with 
+                        your actual noreply address from the settings page.
+                    </p>
+                </div>
+
+                <!-- Step 8: Test End-to-End -->
+                <div class="step" id="step8">
+                    <div class="step-header">
+                        <div class="step-number">8</div>
+                        <h3>Test End-to-End</h3>
+                    </div>
+
+                    <p>
+                        Trigger the workflow manually and verify each stage works correctly:
+                    </p>
+
+                    <h4>Manual Trigger</h4>
+
+                    <ol>
+                        <li>
+                            Go to the <strong>dsa-orchestrator</strong> repo
+                        </li>
+                        <li>
+                            Click <strong>Actions</strong> tab
+                        </li>
+                        <li>
+                            Select <strong>Daily DSA Delivery</strong> workflow
+                        </li>
+                        <li>
+                            Click <strong>Run workflow</strong> → <strong>Run workflow</strong>
+                        </li>
+                    </ol>
+
+                    <h4>Verification Checklist</h4>
+
+                    <p>Watch each stage complete and confirm:</p>
+
+                    <ol>
+                        <li>
+                            <strong>✅ Workflow starts</strong>
+                            <br>
+                            <em>You see the "deliver" job running</em>
+                        </li>
+                        <li>
+                            <strong>✅ Branch created</strong>
+                            <br>
+                            <em>Check <code>dsa-output</code> → Branches — a new branch exists</em>
+                        </li>
+                        <li>
+                            <strong>✅ PR opened</strong>
+                            <br>
+                            <em>Check <code>dsa-output</code> → Pull requests — a new PR exists</em>
+                        </li>
+                        <li>
+                            <strong>✅ CI check runs</strong>
+                            <br>
+                            <em>The PR shows a yellow "in progress" CI check</em>
+                        </li>
+                        <li>
+                            <strong>✅ CI turns green</strong>
+                            <br>
+                            <em>The CI check completes with a green checkmark</em>
+                        </li>
+                        <li>
+                            <strong>✅ PR merges</strong>
+                            <br>
+                            <em>The PR status changes to "merged"</em>
+                        </li>
+                        <li>
+                            <strong>✅ State updates</strong>
+                            <br>
+                            <em>Check <code>dsa-orchestrator</code> → <code>progress/state.json</code> — the last_run and last_day values have advanced</em>
+                        </li>
+                    </ol>
+
+                    <div class="callout warning">
+                        <div class="callout-title">⚠️ If Something Fails</div>
+                        <p>
+                            Click on the workflow run and expand the job logs. Each step is visible 
+                            with its output. Look for red error messages — they're usually quite 
+                            specific about what went wrong.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Troubleshooting -->
+            <section id="troubleshooting">
+                <h2>Troubleshooting</h2>
+
+                <p>Real bugs that have occurred in this pipeline, with causes and fixes:</p>
+
+                <h3>Bug 1: Hyphens in Slug Break Python Imports</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question">Symptom</div>
+                    <p>
+                        <code>SyntaxError: invalid syntax</code> or <code>ModuleNotFoundError</code> 
+                        when Python tries to import a file with hyphens in the name.
+                    </p>
+                    
+                    <div class="faq-question">Cause</div>
+                    <p>
+                        Python module names must follow identifier rules: letters, numbers, and 
+                        underscores only. <code>from solutions.day-001-two-sum import ...</code> is 
+                        invalid Python syntax because <code>day-001-two-sum</code> contains hyphens.
+                    </p>
+                    
+                    <div class="faq-question">Fix</div>
+                    <p>
+                        Use underscores in Python files: <code>day_001_two_sum.py</code>. 
+                        Human-facing names (branch names, PR titles) can keep hyphens — they're 
+                        only Python that cares.
+                    </p>
+                </div>
+
+                <h3>Bug 2: Merge --admin Flag Silently Bypasses CI</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question">Symptom</div>
+                    <p>
+                        A PR merged even though CI was failing. You only noticed because you 
+                        checked manually later.
+                    </p>
+                    
+                    <div class="faq-question">Cause</div>
+                    <p>
+                        The <code>gh pr merge --admin</code> flag tells GitHub "merge this even 
+                        if I'm an admin and bypass protections." When your account is an admin 
+                        on the repo, this flag lets CI failures be ignored.
+                    </p>
+                    
+                    <div class="faq-question">Fix</div>
+                    <p>
+                        Don't use <code>--admin</code>. Use <code>gh pr merge</code> without flags. 
+                        This respects branch protection. Also, ensure branch protection is 
+                        configured to not allow admin bypass.
+                    </p>
+                    
+                    <div class="callout danger">
+                        <div class="callout-title">🐛 General Lesson</div>
+                        <p>
+                            Override flags exist for genuine emergencies, but they defeat the 
+                            safety mechanism they're meant to be an exception to. Treat them 
+                            as a last resort, not a normal tool.
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Bug 3: ModuleNotFoundError in CI but Tests Pass Locally</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question">Symptom</div>
+                    <p>
+                        <code>pytest</code> runs fine on your machine, but the CI workflow shows 
+                        <code>ModuleNotFoundError: No module named 'solutions'</code>.
+                    </p>
+                    
+                    <div class="faq-question">Cause</div>
+                    <p>
+                        When pytest runs from the project root (<code>pytest tests/</code>), 
+                        Python can find the <code>solutions/</code> directory. But when CI runs 
+                        <code>pytest</code> after <code>actions/checkout</code>, the working 
+                        directory might differ, or pytest might change directories internally.
+                    </p>
+                    
+                    <div class="faq-question">Fix</div>
+                    <p>
+                        Add <code>pytest.ini</code> with <code>pythonpath = .</code> at the repo root. 
+                        This ensures the project root is always in Python's search path regardless 
+                        of which directory pytest runs from.
+                    </p>
+                </div>
+
+                <h3>Bug 4: Commits Not Appearing on Contribution Graph</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question">Symptom</div>
+                    <p>
+                        The pipeline runs successfully, PRs merge, but the commits don't 
+                        show up on your GitHub contribution graph.
+                    </p>
+                    
+                    <div class="faq-question">Cause</div>
+                    <p>
+                        GitHub only counts contributions from verified email addresses. 
+                        If the commit author email is not verified on your account (or is 
+                        the default <code>github-action[bot]</code> email), it won't appear 
+                        in your graph.
+                    </p>
+                    
+                    <div class="faq-question">Fix</div>
+                    <p>
+                        Set <code>git config user.email</code> to your GitHub-issued noreply 
+                        address (Settings → Emails → Keep my email addresses private → 
+                        copy the generated address). This is a neutral technical requirement — 
+                        commit attribution is handled this way by design.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 6: Why This Architecture -->
+            <section id="why-this">
+                <h2>Why This Architecture</h2>
+
+                <h3>FAQ: The Reasoning Behind Each Choice</h3>
+
+                <div class="faq-item">
+                    <div class="faq-question">Why split credentials into build-time vs runtime scopes?</div>
+                    <p>
+                        The fine-grained PAT has read-only access to the data repo but read-write 
+                        access to the output repo. If the orchestrator is ever compromised, it can 
+                        only write to the output repo — not to the data repo (where the content 
+                        lives) or any other repository.
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Why test locally AND independently in CI (two gates)?</div>
+                    <p>
+                        Local tests catch obvious failures before wasting CI resources. Independent 
+                        CI tests prove the code works in a clean environment, not just "it worked on 
+                        my machine." Two gates mean a single test failure can't accidentally skip 
+                        verification.
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Why <code>pull_request</code> over <code>pull_request_target</code>?</div>
+                    <p>
+                        <code>pull_request_target</code> exposes secrets to workflows running on 
+                        fork PRs. A malicious PR author could steal those secrets. Since our output 
+                        repo is the main project (not a fork scenario), <code>pull_request</code> 
+                        is both safer and sufficient.
+                    </p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Why no admin bypass on merges?</div>
+                    <p>
+                        If administrators can bypass CI, then the pipeline can too (with 
+                        <code>--admin</code> flags). By removing admin bypass from branch 
+                        protection, we ensure the automation can't circumvent its own safety 
+                        net — not even "just this once."
+                    </p>
+                </div>
+            </section>
+
+            <!-- Section 7: Downloadable Files -->
+            <section id="downloads">
+                <h2>Downloadable Files</h2>
+
+                <p>
+                    All files mentioned in this guide are available in this repository. 
+                    Click to view the raw file directly:
+                </p>
+
+                <div class="download-list">
+                    <div class="download-item">
+                        <div class="file-name">pytest.ini</div>
+                        <div class="description">Python path configuration for pytest</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/pytest.ini" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">requirements.txt</div>
+                        <div class="description">Python dependencies</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/requirements.txt" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">.github/workflows/ci.yml</div>
+                        <div class="description">CI workflow for the output repo</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/.github/workflows/ci.yml" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">solutions/day_001_two_sum.py</div>
+                        <div class="description">Example solution file</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/solutions/day_001_two_sum.py" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">tests/test_day_001_two_sum.py</div>
+                        <div class="description">Example test file</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/tests/test_day_001_two_sum.py" target="_blank">View raw →</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 8: Closing Note -->
+            <section id="closing">
+                <div class="closing-note">
+                    <p>
+                        <em>And yes, running this every day will also keep your GitHub contribution 
+                        graph looking nice and green — a convenient side effect, not the point. 
+                        This guide is about learning automation architecture, not gaming metrics. 
+                        The graph is just a happy accident. 🙂</em>
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        // Initialize syntax highlighting
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.highlightAll();
+        });
+
+        // Copy button functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.querySelector('code');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Active sidebar link highlighting
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
