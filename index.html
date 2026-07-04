@@ -1881,7 +1881,8 @@ f'git -c user.name="YOUR_USERNAME" -c user.email="YOUR_NOREPLY_EMAIL@users.norep
         // Copy button functionality
         function copyCode(button) {
             const codeBlock = button.parentElement.querySelector('code');
-            let text = codeBlock.textContent;
+            // Use innerText to preserve HTML comments inside code blocks
+            let text = codeBlock.innerText;
             
             // Decode HTML entities (e.g., &lt; becomes <)
             const textarea = document.createElement('textarea');
