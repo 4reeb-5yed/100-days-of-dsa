@@ -3,7 +3,7 @@
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-6%20passed-brightgreen)]()
 
-📖 **Full step-by-step build guide**: https://4reeb-5yed.github.io/100-days-of-dsa/
+📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
 This repo is the visible output of a scheduled, multi-repo GitHub Actions
 pipeline. The orchestrator (`dsa-bot`) clones a pre-validated content bank,
