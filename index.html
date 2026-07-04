@@ -628,6 +628,19 @@
                 </p>
             </section>
 
+            <!-- Clone Repos Callout -->
+            <div class="callout tip" style="margin-top: 32px; margin-bottom: 32px;">
+                <div class="callout-title">💡 Want to skip typing any of this?</div>
+                <p>
+                    All three repos are public — clone them directly and adapt them to your own use case:
+                </p>
+                <ul style="margin-bottom: 0;">
+                    <li><a href="https://github.com/4reeb-5yed/dsa-question-bank" target="_blank">dsa-question-bank</a> — Private question bank (publicly viewable)</li>
+                    <li><a href="https://github.com/4reeb-5yed/dsa-bot" target="_blank">dsa-bot</a> — Orchestrator with working scripts</li>
+                    <li><a href="https://github.com/4reeb-5yed/100-days-of-dsa" target="_blank">100-days-of-dsa</a> — Output repo with CI pipeline</li>
+                </ul>
+            </div>
+
             <!-- Section 3: Prerequisites -->
             <section id="prerequisites">
                 <h2>Prerequisites</h2>
@@ -708,9 +721,9 @@
                     <p>Create these three repositories in your GitHub account:</p>
 
                     <ol>
-                        <li><strong>dsa-data</strong> (private) — Your question bank</li>
-                        <li><strong>dsa-orchestrator</strong> (private) — Your automation logic</li>
-                        <li><strong>dsa-output</strong> (public) — Your visible project</li>
+                        <li><strong>dsa-question-bank</strong> (private) — Your question bank</li>
+                        <li><strong>dsa-bot</strong> (private) — Your automation logic</li>
+                        <li><strong>100-days-of-dsa</strong> (public) — Your visible project</li>
                     </ol>
 
                     <p>
@@ -737,57 +750,69 @@
                     </div>
 
                     <p>
-                        This repo stores your problem bank as a JSON file. Each entry describes one 
-                        DSA problem with its solution and tests.
+                        This repo stores your problem bank as a JSON file in <code>problems/bank.json</code>. 
+                        Each entry describes one DSA problem with its solution and tests.
                     </p>
 
-                    <p>Create a file called <code>problem-bank.json</code> in the <strong>dsa-data</strong> repo:</p>
+                    <p>Create a file called <code>problems/bank.json</code> in the <strong>dsa-question-bank</strong> repo:</p>
 
-                    <div class="file-label">dsa-data / problem-bank.json</div>
+                    <div class="file-label">dsa-question-bank / problems / bank.json</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-json">[
   {
-    "day": 1,
+    "id": 1,
+    "slug": "two-sum",
     "title": "Two Sum",
-    "topic": "array-hashing",
     "difficulty": "easy",
-    "problem": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice.",
-    "solution_file": "day_001_two_sum.py",
+    "topic": "array-hashing",
+    "statement": "Given an array and target, return indices of two numbers that add to target.",
     "solution_code": "def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
-    "test_file": "test_day_001_two_sum.py",
-    "test_code": "from solutions.day_001_two_sum import two_sum\n\ndef test_two_sum_basic():\n    assert two_sum([2, 7, 11, 15], 9) == [0, 1]\n\ndef test_two_sum_negative():\n    assert two_sum([-1, -2, -3, -4, -5], -8) == [2, 4]"
+    "test_code": "from solutions.day_001_two_sum import two_sum\n\ndef test_two_sum_basic():\n    assert two_sum([2, 7, 11, 15], 9) == [0, 1]\n\ndef test_two_sum_negative():\n    assert two_sum([-1, -2, -3, -4, -5], -8) == [2, 4]\n"
   },
   {
-    "day": 2,
-    "title": "Contains Duplicate",
+    "id": 5,
+    "slug": "product-except-self",
+    "title": "Product of Array Except Self",
+    "difficulty": "medium",
     "topic": "array-hashing",
-    "difficulty": "easy",
-    "problem": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
-    "solution_file": "day_002_contains_duplicate.py",
-    "solution_code": "def contains_duplicate(nums):\n    return len(nums) != len(set(nums))",
-    "test_file": "test_day_002_contains_duplicate.py",
-    "test_code": "from solutions.day_002_contains_duplicate import contains_duplicate\n\ndef test_has_duplicate():\n    assert contains_duplicate([1, 2, 3, 1]) == True\n\ndef test_no_duplicate():\n    assert contains_duplicate([1, 2, 3, 4]) == False"
+    "statement": "Return product of all elements except self.",
+    "solution_code": "def product_except_self(nums):\n    n = len(nums)\n    result = [1] * n\n    prefix = 1\n    for i in range(n):\n        result[i] = prefix\n        prefix *= nums[i]\n    postfix = 1\n    for i in range(n - 1, -1, -1):\n        result[i] *= postfix\n        postfix *= nums[i]\n    return result",
+    "test_code": "from solutions.day_005_product_except_self import product_except_self\n\ndef test_product_basic():\n    assert product_except_self([1, 2, 3, 4]) == [24, 12, 8, 6]\n\ndef test_product_with_zeros():\n    assert product_except_self([1, 0, 3, 4]) == [0, 12, 0, 0]\n"
+  },
+  {
+    "id": 10,
+    "slug": "trapping-rain-water",
+    "title": "Trapping Rain Water",
+    "difficulty": "hard",
+    "topic": "two-pointers",
+    "statement": "Compute trapped rainwater.",
+    "solution_code": "def trap(height):\n    if not height:\n        return 0\n    left, right = 0, len(height) - 1\n    left_max = right_max = 0\n    water = 0\n    while left < right:\n        if height[left] < height[right]:\n            if height[left] >= left_max:\n                left_max = height[left]\n            else:\n                water += left_max - height[left]\n            left += 1\n        else:\n            if height[right] >= right_max:\n                right_max = height[right]\n            else:\n                water += right_max - height[right]\n            right -= 1\n    return water",
+    "test_code": "from solutions.day_010_trapping_rain_water import trap\n\ndef test_trap_basic():\n    assert trap([0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]) == 6\n\ndef test_trap_no_water():\n    assert trap([3, 0, 2, 0, 4]) == 7\n"
   }
 ]</code></pre>
                     </div>
 
-                    <h4>How to Write Good Problem Bank Entries</h4>
-
-                    <ul>
-                        <li><strong>Paraphrase problems</strong> — Don't copy problem text verbatim from LeetCode or other sites. Rewrite the problem description in your own words.</li>
-                        <li><strong>Spread difficulty</strong> — Include a mix of easy, medium, and hard problems.</li>
-                        <li><strong>Cover multiple topics</strong> — Arrays, strings, linked lists, trees, dynamic programming, etc.</li>
-                        <li><strong>One solution per entry</strong> — Keep it simple. Multiple solutions can come later.</li>
-                    </ul>
-
                     <div class="callout tip">
-                        <div class="callout-title">💡 Tip</div>
+                        <div class="callout-title">💡 117 more entries follow the same schema</div>
                         <p>
-                            The <code>day</code> number in each entry is the order in the bank, not today's date. 
-                            The orchestrator tracks which problems have been used in its own state file.
+                            See the full 120-entry <code>bank.json</code> at:<br>
+                            <a href="https://raw.githubusercontent.com/4reeb-5yed/dsa-question-bank/main/problems/bank.json" target="_blank">https://raw.githubusercontent.com/4reeb-5yed/dsa-question-bank/main/problems/bank.json</a>
                         </p>
                     </div>
+
+                    <h4>Bank Entry Schema</h4>
+
+                    <ul>
+                        <li><strong>id</strong> — Unique integer, starts at 1</li>
+                        <li><strong>slug</strong> — URL-safe identifier (use hyphens: <code>two-sum</code>)</li>
+                        <li><strong>title</strong> — Human-readable name</li>
+                        <li><strong>difficulty</strong> — <code>easy</code>, <code>medium</code>, or <code>hard</code></li>
+                        <li><strong>topic</strong> — Category (e.g., <code>array-hashing</code>, <code>two-pointers</code>)</li>
+                        <li><strong>statement</strong> — Brief problem description</li>
+                        <li><strong>solution_code</strong> — Python solution (hyphens in slug are converted to underscores for Python module names)</li>
+                        <li><strong>test_code</strong> — Pytest tests</li>
+                    </ul>
                 </div>
 
                 <!-- Step 3: Build the Orchestrator Repo -->
@@ -809,328 +834,376 @@
                     <h4>File 1: progress/state.json</h4>
                     <p>Create this file to track which problems have been delivered:</p>
 
-                    <div class="file-label">dsa-orchestrator / progress / state.json</div>
+                    <div class="file-label">dsa-bot / progress / state.json</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-json">{
-  "last_run": "2026-07-04",
-  "last_day": 0,
-  "total_delivered": 0
+  "next_index": 0,
+  "solved_ids": [],
+  "last_run_date": null
 }</code></pre>
                     </div>
 
-                    <h4>File 2: pick_and_commit.py</h4>
-                    <p>This script runs inside the GitHub Actions runner:</p>
+                    <h4>File 2: scripts/pick_and_commit.py</h4>
+                    <p>This script runs inside the GitHub Actions runner. This is the <strong>actual production script</strong> from <a href="https://github.com/4reeb-5yed/dsa-bot/blob/main/scripts/pick_and_commit.py" target="_blank">dsa-bot</a>:</p>
 
-                    <div class="file-label">dsa-orchestrator / pick_and_commit.py</div>
+                    <div class="file-label">dsa-bot / scripts / pick_and_commit.py</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-python">#!/usr/bin/env python3
 """
-Orchestrator script: picks a problem from the data repo,
-writes files to the output repo, opens a PR, waits for CI,
-and merges only if CI passes.
+DSA Bot - Pick and Commit Script
+Reads from dsa-question-bank, creates solution/test files in 100-days-of-dsa,
+opens a PR, merges it, then updates own progress/state.json.
 """
 
 import json
-import os
-import subprocess
-import time
 import sys
+import os
+import tempfile
+import subprocess
+import shutil
+import time
+from pathlib import Path
+from datetime import datetime, date
 
-# Configuration
-DATA_REPO = "YOUR_USERNAME/dsa-data"
-OUTPUT_REPO = "YOUR_USERNAME/dsa-output"
-ORCHESTRATOR_REPO = "YOUR_USERNAME/dsa-orchestrator"
-GITHUB_TOKEN = os.environ["GH_PAT"]
-TODAY = "2026-07-04"  # In real use, calculate from datetime
+BANK_REPO_PAT = os.environ.get("BANK_REPO_PAT", "")
+PUBLIC_REPO_PAT = os.environ.get("PUBLIC_REPO_PAT", "")
+REPO_OWNER = os.environ.get("REPO_OWNER", "4reeb-5yed")
 
-# Paths
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATE_FILE = os.path.join(SCRIPT_DIR, "progress", "state.json")
-DATA_BRANCH = "main"
-
-
-def run(cmd, check=True, capture_output=True):
-    """Run a shell command."""
-    print(f"Running: {cmd}")
-    result = subprocess.run(
-        cmd, shell=True, check=check, capture_output=capture_output, text=True
-    )
-    if result.stdout:
-        print(result.stdout.strip())
-    return result
+BANK_REPO = f"https://x-access-token:{BANK_REPO_PAT}@github.com/{REPO_OWNER}/dsa-question-bank.git"
+PUBLIC_REPO = f"https://x-access-token:{PUBLIC_REPO_PAT}@github.com/{REPO_OWNER}/100-days-of-dsa.git"
+DSA_BOT_REPO = f"https://x-access-token:{os.environ.get('GITHUB_TOKEN', '')}@github.com/{REPO_OWNER}/dsa-bot.git"
 
 
-def load_state():
-    """Load current progress state."""
-    with open(STATE_FILE) as f:
-        return json.load(f)
+def get_today_utc():
+    return date.today().isoformat()
 
 
-def save_state(state):
-    """Save progress state."""
-    with open(STATE_FILE, "w") as f:
+def load_state(state_path):
+    if state_path.exists():
+        with open(state_path) as f:
+            return json.load(f)
+    return {"next_index": 0, "solved_ids": [], "last_run_date": None}
+
+
+def save_state(state_path, state):
+    with open(state_path, 'w') as f:
         json.dump(state, f, indent=2)
 
 
-def git_config():
-    """Configure git with attribution."""
-    run("git config --global user.email 'YOUR_NOREPLY_EMAIL@users.noreply.github.com'")
-    run("git config --global user.name 'Your Name'")
+def run_cmd(cmd, cwd=None, env=None, check=True):
+    """Run a command and return stdout."""
+    result = subprocess.run(
+        cmd,
+        shell=True,
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True
+    )
+    if check and result.returncode != 0:
+        print(f"ERROR: Command failed: {cmd}", file=sys.stderr)
+        print(f"stdout: {result.stdout}", file=sys.stderr)
+        print(f"stderr: {result.stderr}", file=sys.stderr)
+        raise subprocess.CalledProcessError(result.returncode, cmd)
+    return result.stdout.strip()
 
 
-def clone_repos():
-    """Clone both repos using the fine-grained PAT."""
-    base_url = f"https://{GITHUB_TOKEN}@github.com/"
-    
-    # Clone data repo
-    run(f"git clone {base_url}{DATA_REPO} data-repo-temp")
-    
-    # Clone output repo
-    run(f"git clone {base_url}{OUTPUT_REPO} output-repo-temp")
+def wait_for_ci_pass(repo, branch_name, gh_token, timeout_secs=300, poll_interval=10):
+    """
+    Poll the CI check status for a PR/branch.
+    Returns True if CI passed, False if CI failed or timed out.
+    """
+    print(f"Waiting for CI checks on {repo} branch {branch_name}...")
+    deadline = time.time() + timeout_secs
+    env = {**os.environ, "GH_TOKEN": gh_token}
 
-
-def pick_problem(state):
-    """Pick the next problem from the bank."""
-    # Load the bank
-    with open("data-repo-temp/problem-bank.json") as f:
-        bank = json.load(f)
-    
-    # Find next unpicked problem
-    next_day = state["last_day"] + 1
-    
-    for entry in bank:
-        if entry["day"] == next_day:
-            return entry
-    
-    return None  # Bank exhausted
-
-
-def write_files(problem):
-    """Write solution and test files to the output repo."""
-    os.chdir("output-repo-temp")
-    
-    # Create directories
-    os.makedirs("solutions", exist_ok=True)
-    os.makedirs("tests", exist_ok=True)
-    
-    # Write solution file
-    solution_path = f"solutions/{problem['solution_file']}"
-    with open(solution_path, "w") as f:
-        f.write(problem["solution_code"])
-    print(f"Written: {solution_path}")
-    
-    # Write test file
-    test_path = f"tests/{problem['test_file']}"
-    with open(test_path, "w") as f:
-        f.write(problem["test_code"])
-    print(f"Written: {test_path}")
-    
-    # Update README with progress
-    update_readme(problem)
-    
-    os.chdir("..")
-
-
-def update_readme(problem):
-    """Update the README.md progress table."""
-    readme_path = "README.md"
-    
-    # Simple update: append to progress table
-    new_row = f"| {problem['day']:03d} | {problem['title']} | {problem['topic']} | {problem['difficulty']} | {TODAY} |"
-    
-    if os.path.exists(readme_path):
-        with open(readme_path) as f:
-            content = f.read()
-        
-        # Insert before PROGRESS_TABLE_END
-        content = content.replace(
-            "<!-- PROGRESS_TABLE_END -->",
-            f"{new_row}\n<!-- PROGRESS_TABLE_END -->"
+    while time.time() < deadline:
+        # Get status checks for the branch
+        result = subprocess.run(
+            f'gh api repos/{repo}/commits/{branch_name}/check-runs --paginate',
+            shell=True, capture_output=True, text=True, env=env
         )
-        
-        with open(readme_path, "w") as f:
-            f.write(content)
+        if result.returncode == 0:
+            import json
+            try:
+                data = json.loads(result.stdout)
+                check_runs = data.get('check_runs', [])
 
+                if not check_runs:
+                    print("No check runs yet, waiting...")
+                else:
+                    all_concluded = all(c['status'] == 'completed' for c in check_runs)
+                    print(f"Check runs: {len(check_runs)}, all concluded: {all_concluded}")
 
-def run_local_tests():
-    """Run pytest locally before pushing anything."""
-    print("Running local tests...")
-    result = run("pip install pytest -q && pytest -q", check=False)
-    
-    if result.returncode != 0:
-        print("TESTS FAILED locally — aborting pipeline!")
-        sys.exit(1)
-    
-    print("Local tests passed!")
+                    if all_concluded:
+                        # Check if any failed
+                        failed = [c for c in check_runs if c['conclusion'] == 'failure']
+                        if failed:
+                            print(f"CI FAILED: {[c['name'] for c in failed]}")
+                            return False
+                        # Check if all passed
+                        passed = all(c['conclusion'] == 'success' for c in check_runs)
+                        if passed:
+                            print("CI PASSED!")
+                            return True
+            except json.JSONDecodeError:
+                pass
 
+        print(f"Still waiting... (polling every {poll_interval}s)")
+        time.sleep(poll_interval)
 
-def create_pr_and_merge(state, problem):
-    """Create branch, commit, push, open PR, wait for CI, merge."""
-    os.chdir("output-repo-temp")
-    git_config()
-    
-    # Create a new branch for today
-    branch_name = f"daily/day-{problem['day']:03d}"
-    run(f"git checkout -b {branch_name}")
-    run("git add solutions/ tests/ README.md")
-    run(f"git commit -m 'Day {problem['day']}: {problem['title']}'")
-    run(f"git push -u origin {branch_name}")
-    
-    # Open PR using gh CLI
-    pr_url = run(
-        f'gh pr create --title "Day {problem["day"]}: {problem["title"]}" '
-        f'--body "Automated daily delivery" --repo {OUTPUT_REPO}',
-        capture_output=True
-    ).stdout.strip()
-    
-    print(f"PR opened: {pr_url}")
-    
-    # Poll for CI status
-    print("Waiting for CI to pass...")
-    max_wait = 600  # 10 minutes
-    interval = 15
-    elapsed = 0
-    
-    while elapsed < max_wait:
-        time.sleep(interval)
-        elapsed += interval
-        
-        # Check CI status
-        result = run(
-            f'gh pr status --repo {OUTPUT_REPO} --json statusCheckRollup',
-            check=False, capture_output=True
-        )
-        
-        # Parse the JSON output to check status
-        # For simplicity, we'll use a helper script or gh api
-        check_result = subprocess.run(
-            f'gh api repos/YOUR_USERNAME/dsa-output/commits/main/status',
-            shell=True, capture_output=True, text=True
-        )
-        
-        if check_result.returncode == 0:
-            status_data = json.loads(check_result.stdout)
-            state_val = status_data.get("state", "")
-            
-            if state_val == "success":
-                print("CI passed!")
-                break
-            elif state_val == "failure":
-                print("CI failed — aborting merge!")
-                sys.exit(1)
-    
-    # Merge the PR
-    print("Merging PR...")
-    run(f'gh pr merge --squash --repo {OUTPUT_REPO}')
-    
-    # Update state
-    state["last_run"] = TODAY
-    state["last_day"] = problem["day"]
-    state["total_delivered"] += 1
-    
-    os.chdir("..")
-
-
-def update_orchestrator_state(state):
-    """Update the orchestrator's own state file."""
-    os.chdir("orchestrator-repo-temp")
-    git_config()
-    
-    run("git checkout main")
-    
-    # Update state file
-    with open(STATE_FILE) as f:
-        current = json.load(f)
-    current.update(state)
-    
-    with open(STATE_FILE, "w") as f:
-        json.dump(current, f, indent=2)
-    
-    run("git add progress/state.json")
-    run(f'git commit -m "Update state: day {state["last_day"]}"')
-    run("git push")
-    
-    os.chdir("..")
+    print(f"CI check timed out after {timeout_secs}s")
+    return False
 
 
 def main():
     print("=" * 50)
-    print("Starting daily DSA delivery pipeline")
+    print("DSA Bot - Starting daily run")
     print("=" * 50)
-    
-    # Load state
-    state = load_state()
-    
-    # Guard: already ran today?
-    if state["last_run"] == TODAY:
-        print(f"Already ran today ({TODAY}). Skipping.")
-        return
-    
-    # Clone repos
-    print("Cloning repositories...")
-    clone_repos()
-    
-    # Pick next problem
-    problem = pick_problem(state)
-    
-    if problem is None:
-        print("No more problems in bank! Pipeline complete.")
-        return
-    
-    # Write files to output repo
-    print(f"Picking problem: Day {problem['day']} - {problem['title']}")
-    write_files(problem)
-    
-    # Run local tests
-    run_local_tests()
-    
-    # Create PR and wait for CI
-    create_pr_and_merge(state, problem)
-    
-    # Update orchestrator state
-    update_orchestrator_state(state)
-    
-    print("Pipeline complete!")
+
+    # Determine script directory for state file
+    script_dir = Path(__file__).parent.resolve()
+    repo_dir = script_dir.parent
+    state_file = repo_dir / "progress" / "state.json"
+
+    # Load current state
+    state = load_state(state_file)
+    print(f"Current state: {state}")
+
+    today = get_today_utc()
+    print(f"Today (UTC): {today}")
+
+    # Guard: already ran today
+    if state.get("last_run_date") == today:
+        print(f"Already ran today ({today}). Exiting.")
+        sys.exit(0)
+
+    # Clone bank repo
+    print("\nCloning question bank...")
+    bank_tmp = tempfile.mkdtemp(prefix="bank_")
+    try:
+        run_cmd(f"git clone {BANK_REPO} {bank_tmp}")
+        bank_path = Path(bank_tmp) / "problems" / "bank.json"
+        with open(bank_path) as f:
+            bank = json.load(f)
+        print(f"Loaded {len(bank)} problems from bank")
+    finally:
+        pass  # Keep temp dir for now
+
+    # Guard: bank exhausted
+    if state["next_index"] >= len(bank):
+        print("Bank exhausted. No more problems to solve.")
+        sys.exit(0)
+
+    # Pick entry
+    entry = bank[state["next_index"]]
+    day = state["next_index"] + 1
+    day_str = f"{day:03d}"
+    slug = entry["slug"]
+    module_slug = slug.replace("-", "_")  # hyphens invalid in Python identifiers
+    title = entry["title"]
+    topic = entry["topic"]
+    difficulty = entry["difficulty"]
+    solution_code = entry["solution_code"]
+    test_code = entry["test_code"]
+
+    print(f"\nPicking problem {day}: {title} ({topic}, {difficulty})")
+
+    # Clone public repo
+    print("\nCloning public repo...")
+    public_tmp = tempfile.mkdtemp(prefix="public_")
+    try:
+        run_cmd(f"git clone {PUBLIC_REPO} {public_tmp}")
+
+        # Write solution file (use underscores for Python module name)
+        sol_dir = Path(public_tmp) / "solutions"
+        sol_dir.mkdir(exist_ok=True)
+        sol_file = sol_dir / f"day_{day_str}_{module_slug}.py"
+        with open(sol_file, 'w') as f:
+            f.write(solution_code)
+        print(f"Wrote {sol_file}")
+
+        # Write test file - need to fix the import line to use underscores
+        test_dir = Path(public_tmp) / "tests"
+        test_dir.mkdir(exist_ok=True)
+        test_file = test_dir / f"test_day_{day_str}_{module_slug}.py"
+        # Fix import in test_code: replace hyphens with underscores in the import line
+        fixed_test_code = test_code.replace(f"day_{day_str}_{slug}", f"day_{day_str}_{module_slug}")
+        with open(test_file, 'w') as f:
+            f.write(fixed_test_code)
+        print(f"Wrote {test_file}")
+
+        # Update README progress table
+        readme_path = Path(public_tmp) / "README.md"
+        if readme_path.exists():
+            with open(readme_path) as f:
+                readme_content = f.read()
+            # Insert row before PROGRESS_TABLE_END
+            new_row = f"| {day_str} | {title} | {topic} | {difficulty} | {today} |\n"
+            readme_content = readme_content.replace(
+                "<!-- PROGRESS_TABLE_END -->",
+                new_row + "<!-- PROGRESS_TABLE_END -->"
+            )
+            with open(readme_path, 'w') as f:
+                f.write(readme_content)
+            print("Updated README progress table")
+
+        # Test locally before pushing
+        print("\nRunning tests locally...")
+        env = os.environ.copy()
+        env["PYTHONPATH"] = public_tmp
+        test_result = subprocess.run(
+            f"cd {public_tmp} && python -m pytest tests/test_day_{day_str}_{module_slug}.py -v",
+            shell=True,
+            capture_output=True,
+            text=True,
+            env=env
+        )
+        print(test_result.stdout)
+        if test_result.returncode != 0:
+            print("TESTS FAILED - not pushing anything", file=sys.stderr)
+            print(test_result.stderr, file=sys.stderr)
+            sys.exit(1)
+
+        print("Tests passed!")
+
+        # Commit and push to public repo
+        print("\nPushing to public repo...")
+        branch_name = f"day-{day_str}-{slug}"
+        run_cmd(f"git checkout -b {branch_name}", cwd=public_tmp)
+        run_cmd(f"git add solutions/ tests/ README.md", cwd=public_tmp)
+        run_cmd(
+            f'git -c user.name="4reeb-5yed" -c user.email="284557362+4reeb-5yed@users.noreply.github.com" '
+            f'commit -m "Day {day_str}: {title} ({topic}, {difficulty})"',
+            cwd=public_tmp
+        )
+        run_cmd(f"git push origin {branch_name}", cwd=public_tmp)
+
+        # Create PR using gh
+        print("\nCreating PR...")
+        pr_body = f"Automated daily DSA solution. Verified passing before merge.\n\nProblem: {title}\nTopic: {topic}\nDifficulty: {difficulty}"
+
+        run_cmd(
+            f'gh pr create --repo {REPO_OWNER}/100-days-of-dsa '
+            f'--title "Day {day_str}: {title}" '
+            f'--body "{pr_body}" '
+            f'--base main --head {branch_name}',
+            env={**os.environ, "GH_TOKEN": PUBLIC_REPO_PAT}
+        )
+
+        # Wait for CI to pass before merging
+        ci_passed = wait_for_ci_pass(f"{REPO_OWNER}/100-days-of-dsa", branch_name, PUBLIC_REPO_PAT)
+
+        if not ci_passed:
+            print("CI FAILED or TIMED OUT - leaving PR open for inspection", file=sys.stderr)
+            print("NOT merging. Progress/state.json will NOT be updated.", file=sys.stderr)
+            # Exit with error - do NOT advance state
+            sys.exit(1)
+
+        # CI passed - merge the PR
+        print("CI passed! Merging PR...")
+        run_cmd(
+            f'gh pr merge --repo {REPO_OWNER}/100-days-of-dsa '
+            f'--squash --delete-branch {branch_name}',
+            env={**os.environ, "GH_TOKEN": PUBLIC_REPO_PAT}
+        )
+
+        print(f"Successfully merged Day {day_str}: {title}")
+
+    finally:
+        shutil.rmtree(public_tmp, ignore_errors=True)
+        shutil.rmtree(bank_tmp, ignore_errors=True)
+
+    # Update own state (only after successful merge)
+    print("\nUpdating dsa-bot state...")
+    state["next_index"] += 1
+    state["solved_ids"].append(entry["id"])
+    state["last_run_date"] = today
+    save_state(state_file, state)
+
+    # Push state update to dsa-bot repo
+    print("Pushing state update...")
+    dsa_bot_tmp = tempfile.mkdtemp(prefix="dsa_bot_")
+    try:
+        run_cmd(f"git clone {DSA_BOT_REPO} {dsa_bot_tmp}")
+        
+        # Copy state file
+        dst_state = Path(dsa_bot_tmp) / "progress" / "state.json"
+        dst_state.parent.mkdir(exist_ok=True)
+        shutil.copy2(state_file, dst_state)
+        
+        run_cmd(f"git add progress/state.json", cwd=dsa_bot_tmp)
+        run_cmd(
+            f'git -c user.name="4reeb-5yed" -c user.email="284557362+4reeb-5yed@users.noreply.github.com" '
+            f'commit -m "Update state: completed Day {day_str}"',
+            cwd=dsa_bot_tmp
+        )
+        run_cmd("git push origin main", cwd=dsa_bot_tmp)
+        print("State pushed to dsa-bot")
+    finally:
+        shutil.rmtree(dsa_bot_tmp, ignore_errors=True)
+
+    print("\n" + "=" * 50)
+    print(f"SUCCESS: Day {day_str} completed!")
+    print("=" * 50)
 
 
 if __name__ == "__main__":
     main()</code></pre>
                     </div>
 
-                    <h4>File 3: daily-dsa.yml</h4>
+                    <h4>File 3: .github/workflows/daily-dsa.yml</h4>
                     <p>The GitHub Actions workflow that runs the script:</p>
 
-                    <div class="file-label">dsa-orchestrator / .github / workflows / daily-dsa.yml</div>
+                    <div class="file-label">dsa-bot / .github / workflows / daily-dsa.yml</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        <pre><code class="language-yaml">name: Daily DSA Delivery
+                        <pre><code class="language-yaml">name: Daily DSA
 
 on:
-  # Run every day at 9 AM UTC
   schedule:
-    - cron: '0 9 * * *'
-  
-  # Allow manual trigger for testing
+    - cron: '17 9 * * *'  # Run at 09:17 UTC daily
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  deliver:
+  run-dsa-bot:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout orchestrator repo
+      - name: Checkout dsa-bot
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          token: ${{ secrets.GH_PAT }}
-          path: orchestrator-repo-temp
-      
-      - name: Run orchestrator script
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run dsa-bot
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          python3 pick_and_commit.py</code></pre>
+          BANK_REPO_PAT: ${{ secrets.BANK_REPO_PAT }}
+          PUBLIC_REPO_PAT: ${{ secrets.PUBLIC_REPO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: python scripts/pick_and_commit.py</code></pre>
+                    </div>
+
+                    <div class="callout tip">
+                        <div class="callout-title">💡 Note on Environment Variables</div>
+                        <p>
+                            This script uses three separate secrets for security (principle of least privilege):
+                        </p>
+                        <ul>
+                            <li><code>BANK_REPO_PAT</code> — Read-only PAT for dsa-question-bank</li>
+                            <li><code>PUBLIC_REPO_PAT</code> — Read-write PAT for 100-days-of-dsa</li>
+                            <li><code>GITHUB_TOKEN</code> — Default token for dsa-bot (for pushing state)</li>
+                        </ul>
                     </div>
                 </div>
 
@@ -1148,7 +1221,7 @@ jobs:
 
                     <h4>File 1: .github/workflows/ci.yml</h4>
 
-                    <div class="file-label">dsa-output / .github / workflows / ci.yml</div>
+                    <div class="file-label">100-days-of-dsa / .github / workflows / ci.yml</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-yaml">name: CI
@@ -1188,7 +1261,7 @@ jobs:
 
                     <h4>File 2: pytest.ini</h4>
 
-                    <div class="file-label">dsa-output / pytest.ini</div>
+                    <div class="file-label">100-days-of-dsa / pytest.ini</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-ini">[pytest]
@@ -1213,7 +1286,7 @@ pythonpath = .</code></pre>
 
                     <h4>File 3: requirements.txt</h4>
 
-                    <div class="file-label">dsa-output / requirements.txt</div>
+                    <div class="file-label">100-days-of-dsa / requirements.txt</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-txt">pytest</code></pre>
@@ -1221,7 +1294,7 @@ pythonpath = .</code></pre>
 
                     <h4>File 4: README.md (with progress table)</h4>
 
-                    <div class="file-label">dsa-output / README.md</div>
+                    <div class="file-label">100-days-of-dsa / README.md</div>
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
                         <pre><code class="language-markdown"># 100 Days of DSA
@@ -1283,29 +1356,36 @@ pytest
                     <p><strong>Repository access:</strong></p>
                     <ul>
                         <li>Select <strong>Only select repositories</strong></li>
-                        <li>Choose: <code>dsa-data</code>, <code>dsa-orchestrator</code>, <code>dsa-output</code></li>
+                        <li>Choose: <code>dsa-question-bank</code>, <code>dsa-bot</code>, <code>100-days-of-dsa</code></li>
                     </ul>
 
                     <p><strong>Permissions for each repo:</strong></p>
 
                     <ul>
                         <li>
-                            <strong>dsa-data</strong> (contents): <em>Read-only</em> — the script only clones and reads this repo
+                            <strong>dsa-question-bank</strong> (contents): <em>Read-only</em> — the script only clones and reads this repo
                         </li>
                         <li>
-                            <strong>dsa-orchestrator</strong> (contents): <em>Read and write</em> — needs to push state updates
+                            <strong>dsa-bot</strong> (contents): <em>Read and write</em> — needs to push state updates (via GITHUB_TOKEN)
                         </li>
                         <li>
-                            <strong>dsa-output</strong> (contents): <em>Read and write</em> — needs to create branches, commits, and PRs
+                            <strong>100-days-of-dsa</strong> (contents): <em>Read and write</em> — needs to create branches, commits, and PRs
                         </li>
                         <li>
-                            <strong>dsa-output</strong> (pull requests): <em>Read and write</em> — needs to create and merge PRs
+                            <strong>100-days-of-dsa</strong> (pull requests): <em>Read and write</em> — needs to create and merge PRs
                         </li>
                     </ul>
 
                     <div class="callout warning">
                         <div class="callout-title">⚠️ Important</div>
                         <p>
+                            This project uses <strong>two separate PATs</strong> for security (principle of least privilege):
+                        </p>
+                        <ul>
+                            <li><code>BANK_REPO_PAT</code> — Read-only for dsa-question-bank</li>
+                            <li><code>PUBLIC_REPO_PAT</code> — Read-write for 100-days-of-dsa</li>
+                        </ul>
+                        <p style="margin-top: 8px; margin-bottom: 0;">
                             Do NOT grant admin permissions. The orchestrator doesn't need to 
                             bypass branch protections — that's intentional. CI-gated merges are 
                             the point.
@@ -1317,20 +1397,21 @@ pytest
                         GitHub only shows it once!
                     </p>
 
-                    <h4>Add the Token as a Secret</h4>
+                    <h4>Add the Tokens as Secrets</h4>
 
-                    <p>In the <strong>dsa-orchestrator</strong> repo:</p>
+                    <p>In the <strong>dsa-bot</strong> repo:</p>
 
                     <ol>
                         <li>Go to <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong></li>
                         <li>Click <strong>New repository secret</strong></li>
                         <li>
-                            Name: <code>GH_PAT</code>
+                            Name: <code>BANK_REPO_PAT</code>
                         </li>
                         <li>
-                            Value: paste your token
+                            Value: paste your read-only PAT for dsa-question-bank
                         </li>
                         <li>Click <strong>Add secret</strong></li>
+                        <li>Repeat for <code>PUBLIC_REPO_PAT</code> with your read-write PAT for 100-days-of-dsa</li>
                     </ol>
                 </div>
 
@@ -1344,13 +1425,13 @@ pytest
                     <h4>Orchestrator Repo: Workflow Permissions</h4>
 
                     <p>
-                        The orchestrator repo needs permission to push commits and create PRs 
+                        The dsa-bot repo needs permission to push commits and create PRs 
                         via the workflow:
                     </p>
 
                     <ol>
                         <li>
-                            Go to <strong>Settings</strong> → <strong>Actions</strong> → <strong>General</strong>
+                            Go to <strong>dsa-bot</strong> → <strong>Settings</strong> → <strong>Actions</strong> → <strong>General</strong>
                         </li>
                         <li>
                             Under <strong>Workflow permissions</strong>, select 
@@ -1362,7 +1443,7 @@ pytest
                     <h4>Output Repo: Branch Protection</h4>
 
                     <p>
-                        This is critical for the fail-closed design. Go to <strong>dsa-output</strong> → 
+                        This is critical for the fail-closed design. Go to <strong>100-days-of-dsa</strong> → 
                         <strong>Settings</strong> → <strong>Branches</strong> → <strong>Add branch protection rule</strong>:
                     </p>
 
@@ -1444,19 +1525,23 @@ pytest
 
                     <h4>Set the Email in the Script</h4>
 
-                    <p>In <code>pick_and_commit.py</code>, update the <code>git_config()</code> function:</p>
+                    <p>
+                        The real script from dsa-bot has the email hardcoded. To use your own noreply 
+                        address, edit these lines in <code>scripts/pick_and_commit.py</code>:
+                    </p>
 
                     <div class="code-block">
                         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        <pre><code class="language-python">def git_config():
-    """Configure git with attribution."""
-    run("git config --global user.email '12345678+YOURUSERNAME@users.noreply.github.com'")
-    run("git config --global user.name 'Your Name'")</code></pre>
+                        <pre><code class="language-python"># Replace these hardcoded values:
+# f'git -c user.name="4reeb-5yed" -c user.email="284557362+4reeb-5yed@users.noreply.github.com"'
+
+# With your own values:
+f'git -c user.name="YOUR_USERNAME" -c user.email="YOUR_NOREPLY_EMAIL@users.noreply.github.com"'</code></pre>
                     </div>
 
                     <p>
-                        Replace <code>12345678+YOURUSERNAME@users.noreply.github.com</code> with 
-                        your actual noreply address from the settings page.
+                        To get your noreply address: <strong>Settings</strong> → <strong>Emails</strong> → 
+                        <strong>Keep my email addresses private</strong> → copy the generated address.
                     </p>
                 </div>
 
@@ -1475,13 +1560,13 @@ pytest
 
                     <ol>
                         <li>
-                            Go to the <strong>dsa-orchestrator</strong> repo
+                            Go to the <strong>dsa-bot</strong> repo
                         </li>
                         <li>
                             Click <strong>Actions</strong> tab
                         </li>
                         <li>
-                            Select <strong>Daily DSA Delivery</strong> workflow
+                            Select <strong>Daily DSA</strong> workflow
                         </li>
                         <li>
                             Click <strong>Run workflow</strong> → <strong>Run workflow</strong>
@@ -1496,17 +1581,17 @@ pytest
                         <li>
                             <strong>✅ Workflow starts</strong>
                             <br>
-                            <em>You see the "deliver" job running</em>
+                            <em>You see the "run-dsa-bot" job running</em>
                         </li>
                         <li>
                             <strong>✅ Branch created</strong>
                             <br>
-                            <em>Check <code>dsa-output</code> → Branches — a new branch exists</em>
+                            <em>Check <code>100-days-of-dsa</code> → Branches — a new branch exists (e.g., <code>day-004-best-time-to-buy-sell</code>)</em>
                         </li>
                         <li>
                             <strong>✅ PR opened</strong>
                             <br>
-                            <em>Check <code>dsa-output</code> → Pull requests — a new PR exists</em>
+                            <em>Check <code>100-days-of-dsa</code> → Pull requests — a new PR exists</em>
                         </li>
                         <li>
                             <strong>✅ CI check runs</strong>
@@ -1526,7 +1611,7 @@ pytest
                         <li>
                             <strong>✅ State updates</strong>
                             <br>
-                            <em>Check <code>dsa-orchestrator</code> → <code>progress/state.json</code> — the last_run and last_day values have advanced</em>
+                            <em>Check <code>dsa-bot</code> → <code>progress/state.json</code> — the next_index and last_run_date values have advanced</em>
                         </li>
                     </ol>
 
@@ -1708,10 +1793,41 @@ pytest
                 <h2>Downloadable Files</h2>
 
                 <p>
-                    All files mentioned in this guide are available in this repository. 
-                    Click to view the raw file directly:
+                    All files mentioned in this guide are available in their respective repositories. 
+                    These are the real, production files — click to view the raw source:
                 </p>
 
+                <h3>dsa-bot (Orchestrator)</h3>
+                <div class="download-list">
+                    <div class="download-item">
+                        <div class="file-name">scripts/pick_and_commit.py</div>
+                        <div class="description">Main automation script</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/dsa-bot/main/scripts/pick_and_commit.py" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">.github/workflows/daily-dsa.yml</div>
+                        <div class="description">GitHub Actions workflow</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/dsa-bot/main/.github/workflows/daily-dsa.yml" target="_blank">View raw →</a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="file-name">progress/state.json</div>
+                        <div class="description">State tracking file</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/dsa-bot/main/progress/state.json" target="_blank">View raw →</a>
+                    </div>
+                </div>
+
+                <h3>dsa-question-bank (Data)</h3>
+                <div class="download-list">
+                    <div class="download-item">
+                        <div class="file-name">problems/bank.json</div>
+                        <div class="description">Full 120-entry problem bank (JSON)</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/dsa-question-bank/main/problems/bank.json" target="_blank">View raw →</a>
+                    </div>
+                </div>
+
+                <h3>100-days-of-dsa (Output)</h3>
                 <div class="download-list">
                     <div class="download-item">
                         <div class="file-name">pytest.ini</div>
@@ -1727,20 +1843,14 @@ pytest
                     
                     <div class="download-item">
                         <div class="file-name">.github/workflows/ci.yml</div>
-                        <div class="description">CI workflow for the output repo</div>
+                        <div class="description">CI workflow for pull requests</div>
                         <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/.github/workflows/ci.yml" target="_blank">View raw →</a>
                     </div>
                     
                     <div class="download-item">
-                        <div class="file-name">solutions/day_001_two_sum.py</div>
-                        <div class="description">Example solution file</div>
-                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/solutions/day_001_two_sum.py" target="_blank">View raw →</a>
-                    </div>
-                    
-                    <div class="download-item">
-                        <div class="file-name">tests/test_day_001_two_sum.py</div>
-                        <div class="description">Example test file</div>
-                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/tests/test_day_001_two_sum.py" target="_blank">View raw →</a>
+                        <div class="file-name">README.md</div>
+                        <div class="description">Output repo README with progress table</div>
+                        <a href="https://raw.githubusercontent.com/4reeb-5yed/100-days-of-dsa/main/README.md" target="_blank">View raw →</a>
                     </div>
                 </div>
             </section>
