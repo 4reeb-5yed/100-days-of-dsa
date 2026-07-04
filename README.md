@@ -1,26 +1,15 @@
-# 100 Days of DSA — an autonomous CI/CD pipeline demo
+# 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
+
+[![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-6%20passed-brightgreen)]()
 
 📖 **Full step-by-step build guide**: https://4reeb-5yed.github.io/100-days-of-dsa/
 
 This repo is the visible output of a scheduled, multi-repo GitHub Actions
-pipeline. A private orchestrator repo clones a pre-validated content bank,
+pipeline. The orchestrator (`dsa-bot`) clones a pre-validated content bank,
 writes new files here, runs tests locally, opens a pull request, waits for
 an independent CI check to genuinely pass, and only then merges —
 automatically, once a day, with no manual intervention after setup.
-
-The project was built to explore:
-- Secure credential scoping across multiple repositories (separate
-  least-privilege tokens for build-time vs. runtime use)
-- Fail-closed CI gating — broken code is structurally prevented from
-  reaching `main`, verified via two independent test runs
-- Branch-protection-respecting automated merges (no bypass flags)
-- Debugging real pipeline failures: an import-path/module-naming bug, a
-  merge-logic bug that silently ignored failing CI checks, and a
-  fork-PR secret-exposure consideration
-
-The daily content itself (DSA solutions) comes from a private, pre-written
-question bank — the interesting engineering here is the pipeline that
-delivers and verifies it, not live problem-solving.
 
 ## Progress
 
@@ -32,19 +21,38 @@ delivers and verifies it, not live problem-solving.
 | 003 | Valid Anagram | array-hashing | easy | 2026-07-04 |
 <!-- PROGRESS_TABLE_END -->
 
-## About This Project
+## Repository Structure
 
-This repository tracks my 100-day journey learning Data Structures and Algorithms. Each day, a new problem solution is automatically added to this repository via GitHub Actions.
+```
+├── .github/workflows/ci.yml   # Independent CI verification gate
+├── solutions/                 # DSA problem solutions (auto-generated)
+│   └── day_XXX_*.py
+├── tests/                     # Pytest test cases
+│   └── test_day_XXX_*.py
+├── pytest.ini                 # Python path configuration
+├── requirements.txt           # Dependencies (pytest)
+└── index.html                 # Full pipeline documentation
+```
 
-Problems are sourced from a private question bank and include:
-- Real, correct Python solutions
-- Comprehensive test cases
-- Difficulty ratings (easy, medium, hard)
-- Topic categorization
+## The Engineering Story
+
+This project was built to explore:
+- **Secure credential scoping** across multiple repositories (separate
+  least-privilege tokens for build-time vs. runtime use)
+- **Fail-closed CI gating** — broken code is structurally prevented from
+  reaching `main`, verified via two independent test runs
+- **Branch-protection-respecting automated merges** (no bypass flags)
+- **Real pipeline debugging**: import-path/module-naming bugs, merge-logic
+  bugs that silently ignored failing CI checks, and fork-PR secret-exposure
+  considerations
+
+The daily content (DSA solutions) comes from a pre-written question bank
+— the interesting engineering here is the pipeline that delivers and
+verifies it, not live problem-solving.
 
 ## Running Tests
 
 ```bash
 pip install -r requirements.txt
-pytest
+python -m pytest
 ```
