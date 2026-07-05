@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-6%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-8%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,13 +20,14 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 3 of 100** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 3%
+**Day 4 of 100** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 4%
 
-| # | Problem | Topic | Level | Date |
-|---|---------|-------|-------|------|
-| 001 | Two Sum | array-hashing | 🟢 easy | - |
-| 002 | Contains Duplicate | array-hashing | 🟢 easy | - |
-| 003 | Valid Anagram | array-hashing | 🟢 easy | - |
+| # | Problem | Topic | Level |
+|---|---------|-------|-------|
+| 001 | Two Sum | array-hashing | 🟢 easy |
+| 002 | Contains Duplicate | array-hashing | 🟢 easy |
+| 003 | Valid Anagram | array-hashing | 🟢 easy |
+| 004 | Best Time to Buy and Sell Stock | array-hashing | 🟢 easy |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
