@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-14%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-16%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 6 of 100** ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 6%
+**Day 7 of 100** ███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 7%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -30,6 +30,7 @@ automatically, once a day, with no manual intervention after setup.
 | 004 | Best Time to Buy and Sell Stock | array-hashing | 🟢 easy |
 | 005 | Product of Array Except Self | array-hashing | medium |
 | 006 | Find Minimum in Rotated Sorted Array | binary-search | medium |
+| 007 | Search in Rotated Sorted Array | binary-search | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
