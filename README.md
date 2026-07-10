@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-18%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-20%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 8 of 100** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 8%
+**Day 9 of 100** ████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 9%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -32,6 +32,7 @@ automatically, once a day, with no manual intervention after setup.
 | 006 | Find Minimum in Rotated Sorted Array | binary-search | medium |
 | 007 | Search in Rotated Sorted Array | binary-search | medium |
 | 008 | 3Sum | two-pointers | medium |
+| 009 | Container With Most Water | two-pointers | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
