@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-29%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-34%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 12 of 100** ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 12%
+**Day 13 of 100** ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 13%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -36,6 +36,7 @@ automatically, once a day, with no manual intervention after setup.
 | 010 | Trapping Rain Water | two-pointers | hard |
 | 011 | Longest Consecutive Sequence | array-hashing | easy |
 | 012 | Subarray Sum Equals K | two-pointers | medium |
+| 013 | Find Peak Element | binary-search | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
