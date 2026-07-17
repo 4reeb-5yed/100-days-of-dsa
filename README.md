@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 15 of 100** ███████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 15%
+**Day 16 of 100** ████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 16%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -39,6 +39,7 @@ automatically, once a day, with no manual intervention after setup.
 | 013 | Find Peak Element | binary-search | medium |
 | 014 | Reverse Linked List | linked-lists | easy |
 | 015 | Maximum Depth of Binary Tree | trees | easy |
+| 016 | Invert Binary Tree | trees | easy |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
