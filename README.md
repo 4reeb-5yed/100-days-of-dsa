@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-63%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-65%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 21 of 100** ██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 21%
+**Day 22 of 100** ███████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 22%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -45,6 +45,7 @@ automatically, once a day, with no manual intervention after setup.
 | 019 | Implement Trie | tries | medium |
 | 020 | Kth Largest Element | heaps | medium |
 | 021 | Jump Game | greedy | medium |
+| 022 | Find All Numbers Disappeared | array-hashing | easy |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
