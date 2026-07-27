@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-74%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-77%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 25 of 100** ████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 25%
+**Day 26 of 100** █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 26%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -49,6 +49,7 @@ automatically, once a day, with no manual intervention after setup.
 | 023 | Number of Islands | graphs | medium |
 | 024 | House Robber | dynamic-programming | medium |
 | 025 | Merge Two Sorted Lists | linked-lists | easy |
+| 026 | Longest Substring Without Repeating Characters | sliding-window | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
