@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-80%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-83%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 27 of 100** █████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 27%
+**Day 28 of 100** ██████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 28%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -51,6 +51,7 @@ automatically, once a day, with no manual intervention after setup.
 | 025 | Merge Two Sorted Lists | linked-lists | easy |
 | 026 | Longest Substring Without Repeating Characters | sliding-window | medium |
 | 027 | Single Number | bit-manipulation | easy |
+| 028 | Coin Change | dynamic-programming | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
