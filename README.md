@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-92%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-95%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 31 of 100** ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 31%
+**Day 32 of 100** ████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 32%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -55,6 +55,7 @@ automatically, once a day, with no manual intervention after setup.
 | 029 | Move Zeroes | array-hashing | easy |
 | 030 | Sort Colors | two-pointers | medium |
 | 031 | Merge Intervals | intervals | easy |
+| 032 | Word Break | dynamic-programming | hard |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
