@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-105%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-107%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 35 of 100** █████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 35%
+**Day 36 of 100** ██████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 36%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -59,6 +59,7 @@ automatically, once a day, with no manual intervention after setup.
 | 033 | N-Queens | backtracking | hard |
 | 034 | Clone Graph | graphs | hard |
 | 035 | Regular Expression Matching | dynamic-programming | hard |
+| 036 | Evaluate Reverse Polish Notation | stacks | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
