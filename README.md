@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 42 of 100** █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 42%
+**Day 43 of 100** █████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 43%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -66,6 +66,7 @@ automatically, once a day, with no manual intervention after setup.
 | 040 | Pacific Atlantic Water Flow | graphs | medium |
 | 041 | Minimum Genetic Mutation | graphs | hard |
 | 042 | Integer to Roman | math | medium |
+| 043 | Trapping Rain Water II | heaps | hard |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
