@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-135%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-136%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 46 of 100** ███████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░ 46%
+**Day 47 of 100** ███████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░ 47%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -70,6 +70,7 @@ automatically, once a day, with no manual intervention after setup.
 | 044 | Evaluate Division | graphs | medium |
 | 045 | K Closest Points to Origin | heaps | medium |
 | 046 | Longest Increasing Path in Matrix | dynamic-programming | hard |
+| 047 | Maximum Sum Circular Subarray | dynamic-programming | hard |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
