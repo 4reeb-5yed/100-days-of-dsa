@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-148%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-150%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 50 of 100** █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 50%
+**Day 51 of 100** █████████████████████████░░░░░░░░░░░░░░░░░░░░░░░░░ 51%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -74,6 +74,7 @@ automatically, once a day, with no manual intervention after setup.
 | 048 | Insert Delete GetRandom O(1) | design | medium |
 | 049 | Fizz Buzz | math | easy |
 | 050 | Find Minimum in Rotated Sorted Array II | binary-search | hard |
+| 051 | Combination Sum II | backtracking | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
