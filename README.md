@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-159%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-162%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 54 of 100** ███████████████████████████░░░░░░░░░░░░░░░░░░░░░░░ 54%
+**Day 55 of 100** ███████████████████████████░░░░░░░░░░░░░░░░░░░░░░░ 55%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -78,6 +78,7 @@ automatically, once a day, with no manual intervention after setup.
 | 052 | Permutations | backtracking | medium |
 | 053 | Subsets | backtracking | medium |
 | 054 | Word Search | backtracking | hard |
+| 055 | Binary Tree Right Side View | trees | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
