@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-168%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-173%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 57 of 100** ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░ 56%
+**Day 58 of 100** ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░ 57%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -81,6 +81,7 @@ automatically, once a day, with no manual intervention after setup.
 | 055 | Binary Tree Right Side View | trees | medium |
 | 056 | Count Good Nodes in Binary Tree | trees | medium |
 | 057 | House Robber II | dynamic-programming | medium |
+| 058 | Decode Ways | dynamic-programming | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
