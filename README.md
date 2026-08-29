@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 58 of 100** ████████████████████████████░░░░░░░░░░░░░░░░░░░░░░ 57%
+**Day 59 of 100** █████████████████████████████░░░░░░░░░░░░░░░░░░░░░ 59%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -82,6 +82,7 @@ automatically, once a day, with no manual intervention after setup.
 | 056 | Count Good Nodes in Binary Tree | trees | medium |
 | 057 | House Robber II | dynamic-programming | medium |
 | 058 | Decode Ways | dynamic-programming | medium |
+| 059 | Lowest Common Ancestor | trees | medium |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
