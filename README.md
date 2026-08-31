@@ -1,7 +1,7 @@
 # 100 Days of DSA — an Autonomous CI/CD Pipeline Demo
 
 [![CI](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml/badge.svg)](https://github.com/4reeb-5yed/100-days-of-dsa/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/badge/tests-177%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-180%20passed-brightgreen)]()
 
 📖 **[Pipeline Build Guide](https://4reeb-5yed.github.io/100-days-of-dsa/)** — Step-by-step instructions to build this CI/CD system
 
@@ -20,7 +20,7 @@ automatically, once a day, with no manual intervention after setup.
 
 ## Progress
 
-**Day 60 of 100** ██████████████████████████████░░░░░░░░░░░░░░░░░░░░ 60%
+**Day 61 of 100** ██████████████████████████████░░░░░░░░░░░░░░░░░░░░ 61%
 
 | # | Problem | Topic | Level |
 |---|---------|-------|-------|
@@ -84,6 +84,7 @@ automatically, once a day, with no manual intervention after setup.
 | 058 | Decode Ways | dynamic-programming | medium |
 | 059 | Lowest Common Ancestor | trees | medium |
 | 060 | Time Based Key-Value Store | design | medium |
+| 061 | Linked List Cycle | linked-lists | easy |
 <!-- PROGRESS_TABLE_END -->
 
 ## Repository Structure
